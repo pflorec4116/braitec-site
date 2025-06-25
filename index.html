@@ -32,7 +32,8 @@
       cursor: pointer;
       padding: 10px;
       z-index: 999;
-      margin-left: auto;
+      margin-left: 0;
+      margin-right: 10px;
     }
 
     .hamburger div {
@@ -45,6 +46,7 @@
 
     .navbarindex {
       display: flex;
+      padding: 0 20px;
       justify-content: space-between;
       align-items: center;
     }
@@ -53,7 +55,7 @@
       justify-content: flex-start;
     }
     .logo img {
-      height: 60px;
+      height: 80px;
     }
 
     .hero-content h1 {
@@ -169,19 +171,28 @@
     max-width: 100% !important;
   }
 
-  .hero-search-form {
-    flex-direction: column;
-    gap: 10px;
-  }
+    .hero-search-form {
+      flex-direction: column;
+      gap: 10px;
+    }
 
-  .hero-search-form select,
-  .hero-search-form input {
-    width: 100%;
-  }
+    .hero-search-form select,
+    .hero-search-form input {
+      width: 100%;
+      text-align: left;
+    }
 
-  .hero-search-form button {
-    width: 100%;
-  }
+    .hero-search-form input::placeholder {
+      text-align: left;
+    }
+
+    .hero-search-form input[name="ubicacion"] {
+      box-sizing: border-box;
+    }
+
+    .hero-search-form button {
+      width: 100%;
+    }
 
   .nav-links-index {
     flex-direction: column;
