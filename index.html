@@ -7,6 +7,61 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="assets/braiteclogo.svg" type="image/svg+xml">
  <style>
+ .navbarindex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+  }
+
+  .hamburger {
+    display: none;
+    margin-left: auto;
+  }
+
+  @media (max-width: 768px) {
+    .hamburger {
+      display: block;
+      cursor: pointer;
+      padding: 10px;
+      z-index: 999;
+      margin-left: auto;
+    }
+
+    .hamburger div {
+      width: 25px;
+      height: 3px;
+      background-color: white;
+      margin: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .navbarindex {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .logo {
+      justify-content: flex-start;
+    }
+    .logo img {
+      height: 40px;
+    }
+
+    .hero-content h1 {
+      font-size: 20px;
+      text-align: center;
+    }
+  }
  .location-card,
 .property-types div,
 .investment-types div {
@@ -74,17 +129,73 @@
 .location-name {
   transform: translate(-50%, -80%);
 }
+
+@media (max-width: 768px) {
+  .featured-locations,
+  .property-types div,
+  .investment-types div,
+  .about-braitec,
+  footer div {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .location-card,
+  .casas,
+  .departamentos,
+  .oficinas,
+  .terrenos,
+  .bienes-raices,
+  .tecnologia {
+    width: 90% !important;
+    height: auto !important;
+  }
+
+  .about-braitec > div {
+    max-width: 100% !important;
+  }
+
+  .hero-search-form {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-search-form select,
+  .hero-search-form input {
+    width: 100%;
+  }
+
+  .hero-search-form button {
+    width: 100%;
+  }
+
+  .nav-links-index {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  footer > div {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
 </style>
 </head>
 <body>
   <nav class="navbarindex">
     <a href="index.html" class="logo"> 
-      <img src="assets/braiteclogo.svg" alt="Braitec Logo"> </a>
+      <img src="assets/braiteclogo.svg" alt="Braitec Logo"> 
+    </a>
+    <div class="hamburger" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
     <ul class="nav-links-index">
-   <li><a href="propiedades.html">Propiedades</a></li>
-    <li><a href="servicios.html">Servicios</a></li>
-    <li><a href="nosotros.html">Nosotros</a></li>
-    <li><a href="contacto.html">Contacto</a></li>
+      <li><a href="propiedades.html">Propiedades</a></li>
+      <li><a href="servicios.html">Servicios</a></li>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
     </ul>
   </nav>
 
@@ -212,5 +323,12 @@
       <p>&copy; 2025 Braitec. Todos los derechos reservados.</p>
     </div>
   </footer>
+
+  <script>
+  function toggleMenu() {
+    const navLinks = document.querySelector('.nav-links-index');
+    navLinks.classList.toggle('show');
+  }
+</script>
 </body>
 </html>

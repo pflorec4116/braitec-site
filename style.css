@@ -354,3 +354,36 @@ h1 {
   height: 100vh;
   background-color: white;
 }
+/* Hide regular nav links and show hamburger icon on mobile */
+@media (max-width: 768px) {
+  .nav-links-index {
+    display: none;
+    flex-direction: column;
+    background-color: #000;
+    position: absolute;
+    top: 80px;
+    right: 0;
+    width: 200px;
+    padding: 20px;
+  }
+
+  .nav-links-index.show {
+    display: flex;
+  }
+
+  .hamburger {
+    display: block;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 999;
+  }
+
+  .hamburger div {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 5px;
+    transition: all 0.3s ease;
+  }
+}
+
