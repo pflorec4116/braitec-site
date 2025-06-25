@@ -7,11 +7,34 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="assets/braiteclogo.svg" type="image/svg+xml">
  <style>
+
+  html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
  .navbarindex {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+  }
+
+  @media (max-width: 480px) {
+    .hero-content h1 {
+      font-size: 18px;
+    }
+
+    .logo img {
+      height: 60px;
+      margin-left: -80px;
+      margin-bottom: 15px;
+
+    }
+
+    .hamburger {
+      margin-right: 40px;
+    }
   }
 
   .logo {
@@ -33,7 +56,7 @@
       padding: 10px;
       z-index: 999;
       margin-left: 0;
-      margin-right: 10px;
+      margin-right: 40px;
     }
 
     .hamburger div {
@@ -68,6 +91,58 @@
       flex-direction: column;
       position: absolute;
       top: 60px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .nav-links-index.show {
+      display: flex;
+    }
+  }
+  @media (max-width: 820px) {
+    .hamburger {
+      display: block;
+      cursor: pointer;
+      padding: 10px;
+      z-index: 999;
+      margin-left: 0;
+      margin-right: 40px;
+    }
+
+    .hamburger div {
+      width: 25px;
+      height: 3px;
+      background-color: white;
+      margin: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .navbarindex {
+      display: flex;
+      padding: 0 20px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      justify-content: flex-start;
+    }
+    .logo img {
+      height: 120px;
+    }
+
+    .hero-content h1 {
+      font-size: 22px;
+      text-align: left;
+    }
+
+    .nav-links-index {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 80px;
       right: 20px;
       background: rgba(0, 0, 0, 0.9);
       padding: 20px;
@@ -205,10 +280,42 @@
   }
 }
 </style>
+  <style>
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 51px;
+    height: 51px;
+    border: 2px solid white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .social-icons a:hover {
+    background-color: white;
+  }
+
+  .social-icons a:hover img {
+    filter: invert(1);
+  }
+
+  .social-icons img {
+    height: 36px;
+    width: 36px;
+    transition: filter 0.3s ease;
+  }
+  </style>
 </head>
 <body>
   <nav class="navbarindex">
-    <a href="index.html" class="logo"> 
+    <a href="index.html" class="logo-index"> 
       <img src="assets/braiteclogo.svg" alt="Braitec Logo"> 
     </a>
     <div class="hamburger" onclick="toggleMenu()">
@@ -302,7 +409,7 @@
   <section class="about-braitec" style="background-color: black; width: 100%; padding: 80px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 40px; justify-content: center;">
   <div style="flex: 1 1 400px; max-width: 500px;">
     <div style="position: relative; width: 100%; max-width: 500px;">
-      <img src="assets/braitec.jpg" alt="Braitec Logo" style="width: 100%; border: 0.5px solid rgba(255, 255, 255, 0.4); border-radius: 12px;">
+      <img src="assets/bottomimage.png" alt="Braitec Icon" style="width: 100%; border: 0.5px solid rgba(255, 255, 255, 0.4); border-radius: 12px;">
     </div>
   </div>
   <div style="flex: 1 1 400px; max-width: 500px;">
@@ -313,7 +420,7 @@
     <p style="font-size: 16px; margin-bottom: 24px; color: white;">
     Utilizamos herramientas digitales avanzadas para identificar oportunidades, automatizar procesos y ofrecer un servicio personalizado, ágil y transparente. Nuestra misión es potenciar la inversión inmobiliaria a través de la tecnología y el conocimiento local.
     </p>
-    <a href="#contacto" style="background-color: white; color: black; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Más información</a>
+    <a href="contacto.html" style="background-color: #BA930C; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Contáctanos</a>
   </div>
 </section>
 
@@ -328,24 +435,44 @@
     <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp" style="width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
   </a>
 
-  <footer style="background-color: #000; color: #fff; padding: 40px 20px; font-size: 14px;">
-    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 30px;">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <img src="assets/braiteclogo.svg" alt="Braitec Logo" style="height: 120px;">
+  <footer style="background-color: #000; color: #fff; padding: 60px 20px; font-size: 14px;">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <div style="flex: 1 1 200px; margin-bottom: 20px;">
+        <img src="assets/braiteclogo.svg" alt="Braitec Logo" style="height: 100px; margin-bottom: 10px;">
+        <p style="margin: 0;">BIENES RAÍCES, INVERSIÓN & TECNOLOGÍA</p>
       </div>
-      <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center; font-size: 18px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <img src="assets/email.png" alt="Email" style="height: 26px;">
-          <span>info@braitec.com</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <img src="assets/Phone.png" alt="Phone" style="height: 26px;">
-          <span>+52 221 135 3008</span>
-        </div>
+      <div style="flex: 1 1 150px; margin-bottom: 20px;">
+        <h4 style="margin-bottom: 10px;">Ubicación</h4>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+          <li><a href="#" style="color: #fff; text-decoration: none;">P.º Opera 9, Lomas de Angelópolis</a></li>
+          <li><a href="#" style="color: #fff; text-decoration: none;">San Andrés Cholula</a></li>
+          <li><a href="#" style="color: #fff; text-decoration: none;">Puebla</a></li>
+        </ul>
+      </div>
+      <div style="flex: 1 1 150px; margin-bottom: 20px;">
+        <h4 style="margin-bottom: 10px;">Acceso</h4>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+          <li><a href="propiedades.html" style="color: #fff; text-decoration: none;">Propiedades</a></li>
+          <li><a href="servicios.html" style="color: #fff; text-decoration: none;">Servicios</a></li>
+          <li><a href="contacto.html" style="color: #fff; text-decoration: none;">Contacto</a></li>
+        </ul>
+      </div>
+      <div style="flex: 1 1 150px; margin-bottom: 20px;">
+        <h4 style="margin-bottom: 10px;">Contacto</h4>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+          <li><a href="#" style="color: #fff; text-decoration: none;">+52 221 135 3008</a></li>
+          <li><a href="#" style="color: #fff; text-decoration: none;">+52 222 227 5573</a></li>
+          <li><a href="#" style="color: #fff; text-decoration: none;">contacto@braitec.com</a></li>
+        </ul>
       </div>
     </div>
-    <div style="margin-top: 20px; max-width: 1200px; margin-left: auto; margin-right: auto;">
-      <p>&copy; 2025 Braitec. Todos los derechos reservados.</p>
+    <div style="text-align: center; padding-top: 30px;">
+      <div class="social-icons" style="margin-bottom: 20px;">
+        <a href="https://www.facebook.com/braitec"><img src="https://cdn.prod.website-files.com/682fe043039753e3e2eece23/6834939be03a70165600af68_1.png" alt="Facebook"></a>
+        <a href="https://www.tiktok.com/@braitecbienesraicess?_t=ZS-8wbf7sOZrke&_r=1"><img src="https://cdn.prod.website-files.com/682fe043039753e3e2eece23/6834939b4dacc1e40eb55f5d_4.png" alt="Tiktok"></a>
+        <a href="https://www.instagram.com/braitec_oficial/"><img src="https://cdn.prod.website-files.com/682fe043039753e3e2eece23/6834939bfe7775cb2f328c84_3.png" alt="Instagram"></a>
+      </div>
+      <p style="margin: 0;">&copy; 2025 Braitec. Todos los derechos reservados.</p>
     </div>
   </footer>
 
