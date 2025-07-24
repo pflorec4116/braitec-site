@@ -1,10 +1,79 @@
 body {
   font-family: system-ui, sans-serif;
-  background: #f7f7f7;
+  background: white;
   margin: 0;
   padding: 0;
 }
 
+.search-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 0px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+
+
+.search-field {
+  position: relative;
+  flex: 1 1 180px;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border-radius: 16px;
+  padding: 8px 12px;
+  
+}
+
+.search-field select:focus,
+.search-field input:focus {
+  outline: none;
+  border: 1px solid #BA930C;
+  box-shadow: 0 0 0 2px rgba(186, 147, 12, 0.3);
+}
+
+
+.search-field select,
+.search-field input {
+ padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid white;
+  border-radius: 6px;
+  background-color: transparent;
+  color: white;
+  width: 280px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px 16px;
+}
+
+
+
+
+.search-button {
+ padding: 0.75rem 3.5rem;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-right: 50px;
+}
+
+.full-width {
+  flex: 2 1 300px;
+}
 
 
 
@@ -16,8 +85,9 @@ body {
   padding: 1rem 2rem;
   position: sticky;
   top: 0;
-  z-index: 1000px;
-  height: 70px;
+  z-index: 1000;
+  height: 80px;
+  overflow: hidden;
 
 }
 
@@ -31,8 +101,10 @@ body {
   top: 0;
   width: 100%;
   z-index: 1000;
-  height: 70px;
+  height: 80px;
+  overflow: hidden;  
 }
+
 
 
 .logo img {
@@ -105,39 +177,46 @@ h1 {
   margin-top: 32px;
 }
 
+#property-list {
+  background-color: #f7f7f7;
+  padding-top: 10px;
+  max-width: 100%;
+  display: block; 
+}
+
 #property-container {
   display: block;
   padding: 40px 20px 80px 40px;
 }
-
 .property-card {
   display: flex;
   flex-direction: row;
-  width: 90%;
-  max-width: 900px;
-  height: 300px;
-  margin: 24px 0 25px 0;  /* top, right, bottom, left */
+  width: 60%;
+  height: 270px; /* Fixed height for consistency */
+  margin: 24px auto 25px 0;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   overflow: hidden;
+  
 }
 
 .property-image-container {
-  width: 40%;
+  width: 35%;
   height: 100%;
   overflow: hidden;
+  flex-shrink: 0;
 }
-
 .property-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* This crops but doesn't stretch */
+  display: block;
 }
 
 .property-info {
-  width: 60%;
+  width: 65%; /* Adjust to match image side */
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -145,48 +224,34 @@ h1 {
 }
 
 .property-title {
-  font-size: 20px;
-  margin: 0 0 8px;
-}
-
-.property-address {
-  font-size: 16px;
-  color: #666;
-  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 6px;
 }
 
 .property-location {
   font-size: 14px;
-  color: #555;
-  margin-bottom: 8px;
+  color: #777;
+  margin: 0 0 10px;
 }
 
 .property-description {
-  font-size: 12px;
-  font-weight: 300;
-  color: #888;
-  margin: 0 0 12px;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.property-details {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
 .property-price {
   font-size: 18px;
-  color: #333;
-}
-
-.property-button {
-  align-self: flex-start;
-  padding: 8px 16px;
-  background-color: #0055a5;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 4px;
+  color: #0055a5;
   font-weight: bold;
-}
-
-.property-section {
-  max-width: 1200px; /* or whatever your container uses */
-  margin: 0 auto;
-  padding: 0 16px;
 }
 
 #pagination {
@@ -221,7 +286,207 @@ h1 {
   background-color: #BA930C;
   color: white;
 }
+.propiedades-filters {
+     max-width: 1400px;
+  margin: 20px auto 30px auto; /* auto centers horizontally */
+  padding: 20px;
+  background: #f7f7f7;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  border-radius: 12px;
+}
 
+    .propiedades-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .propiedades-form label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .propiedades-form input,
+    .propiedades-form select {
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: white;
+      color: black;
+      flex: 0 1 155px;   /* shrinkable but not forced to grow */
+  max-width: 170px;
+  min-width: 120px;
+}
+
+/* Scoped to propiedades.php only */
+.propiedades-form input::placeholder {
+  color: black;
+  opacity: 1;
+}
+
+.propiedades-form input::-webkit-input-placeholder {
+  color: black;
+}
+
+.propiedades-form input:-moz-placeholder {
+  color: black;
+  opacity: 1;
+}
+
+.propiedades-form input::-moz-placeholder {
+  color: black;
+  opacity: 1;
+}
+
+.propiedades-form input:-ms-input-placeholder {
+  color: black;
+}
+
+.search-field input::placeholder {
+  color: white;
+  opacity: 1;
+}
+
+.search-field input::-webkit-input-placeholder {
+  color: white;
+}
+
+.search-field input:-moz-placeholder {
+  color: white;
+  opacity: 1;
+}
+
+.search-field input::-moz-placeholder {
+  color: white;
+  opacity: 1;
+}
+
+.search-field input:-ms-input-placeholder {
+  color: white;
+}
+
+    .apply-btn {
+      padding: 0.75rem 1.5rem;
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .clear-btn {
+      padding: 0.75rem 1.5rem;
+      background-color: transparent;
+      color: black;
+      text-decoration: none;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+
+  .propiedades-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="black" height="12" viewBox="0 0 24 24" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 30px; /* Give room for the icon */
+}
+
+.propiedades-header-bar {
+  max-width: 1400px;
+  margin: 20px auto 10px auto;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.propiedades-count-sort {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.propiedades-title-group {
+  flex-grow: 1;
+}
+
+.propiedades-page-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 6px;
+}
+
+.propiedades-subcount {
+  margin: 0;
+  font-size: 15px;
+  color: #555;
+}
+
+.propiedades-sort-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+
+.sort-label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#sort-by {
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+    
+
+    .property-card img {
+      width: 100%;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .property-card h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+    }
+
+    .page-content {
+      padding: 20px;
+    }
+
+    .pagination {
+  margin-top: 2rem;
+  display: flex;
+  gap: 10px;
+}
+
+.pagination-link {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  text-decoration: none;
+  color: #333;
+}
+
+.pagination-link.active {
+  background-color: black;
+  color: white;
+  font-weight: bold;
+}
 
 .herosectionindex {
   height: 100vh;
@@ -317,9 +582,7 @@ h1 {
   box-shadow: 0 0 0 2px rgba(186, 147, 12, 0.3);
 }
 
-.hero-search-form input::placeholder {
-  color: rgba(255, 255, 255, 0.8);
-}
+
 
 /* Button */
 .hero-search-form button {
@@ -374,13 +637,13 @@ h1 {
   .logo img {
     padding-left: 0;
     margin-top: 0;
-    height: 150px;
+    height: 100px;
   }
 
   .logo-index img {
     padding-left: 0;
     margin-top: 0;
-    height: 150px;
+    height: 100px;
   }
 }
 .hero-search-form input[type="text"]:focus {
@@ -489,10 +752,7 @@ h1 {
     height: 28px;
   }
 
-  .property-card {
-    flex-direction: column;
-    height: auto;
-  }
+  
 
   .property-image-container,
   .property-info {

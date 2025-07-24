@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Propiedades</title>
+  <style>
+    
+
+
+    
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .property-card {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .property-card img {
+      max-width: 100%;
+      max-height: 150px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+    .property-card h3 {
+      margin: 0 0 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Propiedades Disponibles</h1>
+  <div id="results">Cargando...</div>
+
+  <script>
+    const filters = {
+      operation_types: [1],      // venta
+      property_types: [2],       // departamento
+      price_from: 0,
+      price_to: 99999999
+    };
+
+    fetch("propiedades.php?data=" + encodeURIComponent(JSON.stringify(filters)))
+      .then((res) => res.text())
+      .then((html) => {
+        document.getElementById("results").innerHTML = html;
+      })
+      .catch((err) => {
+        document.getElementById("results").innerHTML = "Error al cargar propiedades.";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>

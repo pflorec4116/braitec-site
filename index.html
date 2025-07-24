@@ -221,6 +221,8 @@
   transform: translate(-50%, -80%);
 }
 
+
+
 @media (max-width: 768px) {
   .featured-locations,
   .property-types div,
@@ -316,7 +318,7 @@
 <body>
   <nav class="navbarindex">
     <a href="index.html" class="logo-index"> 
-      <img src="assets/braiteclogo.svg" alt="Braitec Logo"> 
+      <img src="assets/braiteclogoclean.png" alt="Braitec Logo"> 
     </a>
     <div class="hamburger" onclick="toggleMenu()">
       <div></div>
@@ -324,37 +326,65 @@
       <div></div>
     </div>
     <ul class="nav-links-index">
-      <li><a href="propiedades.html">Propiedades</a></li>
+      <li><a href="propiedades.php">Propiedades</a></li>
       <li><a href="servicios.html">Servicios</a></li>
       <li><a href="contacto.html">Contacto</a></li>
     </ul>
   </nav>
 
 
-  <main class="herosectionindex">
-        <div class="hero-content">
-      <h1>Encuentra tu próxima propiedad en<br>Puebla <span class="highlight"> <strong>con confianza</strong></span></h1>
+ <main class="herosectionindex">
+  <div class="hero-content">
+    <h1>Encuentra tu próxima propiedad en<br>Puebla <span class="highlight"> <strong>con confianza</strong></span></h1>
 
-      <form class="hero-search-form">
-        <select name="tipo">
-          <option value="">Tipo:</option>
-          <option value="departamento">Departamento</option>
-          <option value="casa">Casa</option>
-          <option value="terreno">Terreno</option>
-          <option value="local">Local</option>
-        </select>
-        <select name="operacion">
-          <option value="">Operación:</option>
-          <option value="venta">Venta</option>
-          <option value="renta">Renta</option>
-        </select>
-        <input type="text" placeholder="Ubicación o palabras clave:" name="ubicacion" />
-        <button type="submit">Buscar</button>
-      </form>
-    </div>
-   
-  
-  </main>
+<form id="searchForm" action="propiedades.php" method="GET" class="search-bar">
+  <div class="search-field">
+    <select id="operation_type" name="operation_type">
+      <option value="">Operación:</option>
+      <option value="1">Venta</option>
+      <option value="2">Renta</option>
+    </select>
+  </div>
+
+  <div class="search-field">
+    <select id="property_type" name="property_type">
+      <option value="">Tipo:</option>
+      <option value="3">Casa</option>
+      <option value="2">Departamento</option>
+      <option value="1">Terreno</option>
+      <option value="4">Local</option>
+      <option value="5">Oficina</option>
+    </select>
+  </div>
+
+  <div class="search-field full-width">
+    <input type="text" id="keyword" name="keyword" placeholder="Ubicación o palabras clave:">
+  </div>
+
+  <button type="submit" class="search-button">Buscar</button>
+</form>
+
+
+
+  </div>
+</main>
+
+<script>
+  function buscarPropiedades() {
+    const tipo = document.getElementById("tipo").value;
+    const operacion = document.getElementById("operacion").value;
+    const ubicacion = document.getElementById("ubicacion").value;
+
+    const filters = {};
+
+    if (operacion) filters.operation_types = [parseInt(operacion)];
+    if (tipo) filters.property_types = [parseInt(tipo)];
+    if (ubicacion) filters.search = ubicacion;
+
+    const query = encodeURIComponent(JSON.stringify(filters));
+    window.location.href = `propiedades.php?data=${query}`;
+  }
+</script>
 
   <section class="featured-locations" style="display: flex; justify-content: center; align-items: center; gap: 60px; margin: 60px auto; max-width: 1200px; min-height: 60vh; flex-wrap: wrap;">
     <div class="location-card" style="position: relative; width: 360px; height: 420px; overflow: hidden; cursor: pointer;">
