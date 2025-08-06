@@ -1,11 +1,13 @@
-# Use official PHP with Apache image
 FROM php:8.2-apache
 
-# Enable Apache rewrite module (important for routes and .htaccess files)
+# Enable mod_rewrite
 RUN a2enmod rewrite
 
-# Copy your app code into the Apache server folder
+# Copy your app
 COPY . /var/www/html/
 
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /var/www/html
+
+# Explicitly start Apache
+CMD ["apache2-foreground"]
