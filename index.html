@@ -6,314 +6,6 @@
   <title>Braitec</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="assets/braiteclogo.svg" type="image/svg+xml">
- <style>
-
-  html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
- .navbarindex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-  }
-
-  @media (max-width: 480px) {
-    .hero-content h1 {
-      font-size: 18px;
-    }
-
-    .logo img {
-      height: 60px;
-      margin-left: -80px;
-      margin-bottom: 15px;
-
-    }
-
-    .hamburger {
-      margin-right: 40px;
-    }
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex: 1;
-  }
-
-  .hamburger {
-    display: none;
-    margin-left: auto;
-  }
-
-  @media (max-width: 768px) {
-    .hamburger {
-      display: block;
-      cursor: pointer;
-      padding: 10px;
-      z-index: 999;
-      margin-left: 0;
-      margin-right: 40px;
-    }
-
-    .hamburger div {
-      width: 25px;
-      height: 3px;
-      background-color: white;
-      margin: 5px;
-      transition: all 0.3s ease;
-    }
-
-    .navbarindex {
-      display: flex;
-      padding: 0 20px;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      justify-content: flex-start;
-    }
-    .logo img {
-      height: 80px;
-    }
-
-    .hero-content h1 {
-      font-size: 22px;
-      text-align: left;
-    }
-
-    .nav-links-index {
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.9);
-      padding: 20px;
-      border-radius: 8px;
-    }
-
-    .nav-links-index.show {
-      display: flex;
-    }
-  }
-  @media (max-width: 820px) {
-    .hamburger {
-      display: block;
-      cursor: pointer;
-      padding: 10px;
-      z-index: 999;
-      margin-left: 0;
-      margin-right: 40px;
-    }
-
-    .hamburger div {
-      width: 25px;
-      height: 3px;
-      background-color: white;
-      margin: 5px;
-      transition: all 0.3s ease;
-    }
-
-    .navbarindex {
-      display: flex;
-      padding: 0 20px;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      justify-content: flex-start;
-    }
-    .logo img {
-      height: 120px;
-    }
-
-    .hero-content h1 {
-      font-size: 22px;
-      text-align: left;
-    }
-
-    .nav-links-index {
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      top: 80px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.9);
-      padding: 20px;
-      border-radius: 8px;
-    }
-
-    .nav-links-index.show {
-      display: flex;
-    }
-  }
- .location-card,
-.property-types div,
-.investment-types div {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.location-card img,
-.property-types div img,
-.investment-types div img {
-  transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-.location-card h3,
-.property-types div h3,
-.investment-types div h3 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transition: transform 0.3s ease;
-  z-index: 2;
-}
-
-/* Hover effects only apply to the hovered card */
-.location-card:hover img {
-  transform: scale(1.05);
-  filter: brightness(1.2);
-}
-
-.casas:hover img {
-  transform: scale(1.05);
-  filter: brightness(1.2);
-}
-
-.departamentos:hover img {
-  transform: scale(1.05);
-  filter: brightness(1.2);
-}
-
-.oficinas:hover img {
-  transform: scale(1.05);
-  filter: brightness(1.2);
-}
-
-.terrenos:hover img {
-  transform: scale(1.05);
-  filter: brightness(1.2);
-}
-
-.tecnologia:hover img {
-  transform: scale(1.05);
-  filter: brightness(1.2);
-}
-
-.bienes-raices:hover img {
-  transform: scale(1.05);
-  filter: brightness(1.2);
-}
-
-
-
-/* Animate text (levitation effect) on hover */
-.location-name {
-  transform: translate(-50%, -80%);
-}
-
-
-
-@media (max-width: 768px) {
-  .featured-locations,
-  .property-types div,
-  .investment-types div,
-  .about-braitec,
-  footer div {
-    flex-direction: column !important;
-    align-items: center !important;
-  }
-
-  .location-card,
-  .casas,
-  .departamentos,
-  .oficinas,
-  .terrenos,
-  .bienes-raices,
-  .tecnologia {
-    width: 90% !important;
-    height: auto !important;
-  }
-
-  .about-braitec > div {
-    max-width: 100% !important;
-  }
-
-    .hero-search-form {
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .hero-search-form select,
-    .hero-search-form input {
-      width: 100%;
-      text-align: left;
-    }
-
-    .hero-search-form input::placeholder {
-      text-align: left;
-    }
-
-    .hero-search-form input[name="ubicacion"] {
-      box-sizing: border-box;
-    }
-
-    .hero-search-form button {
-      width: 100%;
-    }
-
-  .nav-links-index {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  footer > div {
-    flex-direction: column;
-    gap: 20px;
-  }
-}
-</style>
-  <style>
-  .social-icons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-
-  .social-icons a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 51px;
-    height: 51px;
-    border: 2px solid white;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-  }
-
-  .social-icons a:hover {
-    background-color: white;
-  }
-
-  .social-icons a:hover img {
-    filter: invert(1);
-  }
-
-  .social-icons img {
-    height: 36px;
-    width: 36px;
-    transition: filter 0.3s ease;
-  }
-  </style>
 </head>
 <body>
   <nav class="navbarindex">
@@ -332,184 +24,209 @@
     </ul>
   </nav>
 
+  <main class="herosectionindex">
+    <div class="hero-content">
+      <h1>Encuentra tu próxima propiedad en<br>Puebla <span class="highlight"> <strong>con confianza</strong></span></h1>
 
- <main class="herosectionindex">
-  <div class="hero-content">
-    <h1>Encuentra tu próxima propiedad en<br>Puebla <span class="highlight"> <strong>con confianza</strong></span></h1>
+      <form id="searchForm" action="propiedades.php" method="GET" class="search-bar">
+        <div class="search-field">
+          <select id="operation_type" name="operation_type">
+            <option value="">Operación:</option>
+            <option value="1">Venta</option>
+            <option value="2">Renta</option>
+          </select>
+        </div>
 
-<form id="searchForm" action="propiedades.php" method="GET" class="search-bar">
-  <div class="search-field">
-    <select id="operation_type" name="operation_type">
-      <option value="">Operación:</option>
-      <option value="1">Venta</option>
-      <option value="2">Renta</option>
-    </select>
-  </div>
+        <div class="search-field">
+          <select id="property_type" name="property_type">
+            <option value="">Tipo:</option>
+            <option value="3">Casa</option>
+            <option value="2">Departamento</option>
+            <option value="1">Terreno</option>
+            <option value="4">Local</option>
+            <option value="5">Oficina</option>
+          </select>
+        </div>
 
-  <div class="search-field">
-    <select id="property_type" name="property_type">
-      <option value="">Tipo:</option>
-      <option value="3">Casa</option>
-      <option value="2">Departamento</option>
-      <option value="1">Terreno</option>
-      <option value="4">Local</option>
-      <option value="5">Oficina</option>
-    </select>
-  </div>
+        <div class="search-field full-width">
+          <input type="text" id="keywords" name="keywords" placeholder="Ubicación o palabras clave:">
+        </div>
 
-  <div class="search-field full-width">
-    <input type="text" id="keyword" name="keyword" placeholder="Ubicación o palabras clave:">
-  </div>
-
-  <button type="submit" class="search-button">Buscar</button>
-</form>
-
-
-
-  </div>
-</main>
-
-<script>
-  function buscarPropiedades() {
-    const tipo = document.getElementById("tipo").value;
-    const operacion = document.getElementById("operacion").value;
-    const ubicacion = document.getElementById("ubicacion").value;
-
-    const filters = {};
-
-    if (operacion) filters.operation_types = [parseInt(operacion)];
-    if (tipo) filters.property_types = [parseInt(tipo)];
-    if (ubicacion) filters.search = ubicacion;
-
-    const query = encodeURIComponent(JSON.stringify(filters));
-    window.location.href = `propiedades.php?data=${query}`;
-  }
-</script>
-
-  <section class="featured-locations" style="display: flex; justify-content: center; align-items: center; gap: 60px; margin: 60px auto; max-width: 1200px; min-height: 60vh; flex-wrap: wrap;">
-    <div class="location-card" style="position: relative; width: 360px; height: 420px; overflow: hidden; cursor: pointer;">
-      <img src="assets/puebla.jpg" alt="Puebla" style="width: 100%; height: 100%; object-fit: cover;">
-      <h3 class="location-name" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 32px; text-align: center; margin: 0; font-weight: 500;">Puebla</h3>
+        <button type="submit" class="search-button">Buscar</button>
+      </form>
     </div>
-    <div class="location-card" style="position: relative; width: 360px; height: 420px; overflow: hidden; cursor: pointer;">
-      <img src="assets/riviera.jpg" alt="Riviera Maya" style="width: 100%; height: 100%; object-fit: cover;">
-      <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 32px; text-align: center; margin: 0; font-weight: 500;">Riviera Maya</h3>
+  </main>
+
+  <section class="featured-locations">
+    <!-- Puebla Card -->
+    <div class="location-card" onclick="searchLocation('Puebla')">
+      <img src="assets/puebla.jpg" alt="Puebla">
+      <h3 class="location-name">Puebla</h3>
     </div>
-    <div class="location-card" style="position: relative; width: 360px; height: 420px; overflow: hidden; cursor: pointer;">
-      <img src="assets/cdmx.png" alt="Todo México" style="width: 100%; height: 100%; object-fit: cover;">
-      <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 32px; text-align: center; margin: 0; font-weight: 500;">Todo México</h3>
+    
+    <!-- Riviera Maya Card -->
+    <div class="location-card" onclick="searchLocation('Riviera Maya')">
+      <img src="assets/riviera.jpg" alt="Riviera Maya">
+      <h3>Riviera Maya</h3>
+    </div>
+    
+    <!-- Todo México Card -->
+    <div class="location-card" onclick="searchLocation('')">
+      <img src="assets/cdmx.png" alt="Todo México">
+      <h3>Todo México</h3>
     </div>
   </section>
-  <section class="property-types" style="text-align: center; padding: 60px 20px;">
-    <h2 style="font-size: 36px; margin-bottom: 40px;">¿Qué Buscas?</h2>
-    <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto;">
-      <div class="casas" style="position: relative; width: 260px; height: 320px; overflow: hidden; cursor: pointer;">
-        <img src="assets/casas.jpg" alt="Casas" style="width: 100%; height: 100%; object-fit: cover;">
-        <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 24px; text-align: center; margin: 0; font-weight: 500;">Casas</h3>
+
+  <section class="property-types">
+    <h2>¿Qué Buscas?</h2>
+    <div>
+      <a href="propiedades.php?operation_type=1&property_type=3">
+        <div class="casas">
+          <img src="assets/casas.jpg" alt="Casas">
+          <h3>Casas</h3>
+        </div>
+      </a>
+
+      <a href="propiedades.php?operation_type=1&property_type=2">
+        <div class="departamentos">
+          <img src="assets/departamentos.jpg" alt="Departamentos">
+          <h3>Departamentos</h3>
+        </div>
+      </a>
+
+      <a href="propiedades.php?operation_type=1&property_type=5">
+        <div class="oficinas">
+          <img src="assets/oficinas.jpg" alt="Oficinas">
+          <h3>Oficinas</h3>
+        </div>
+      </a>
+      
+      <a href="propiedades.php?operation_type=1&property_type=1">
+        <div class="terrenos">
+          <img src="assets/terrenos.jpg" alt="Terrenos">
+          <h3>Terrenos</h3>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="investment-types">
+    <h2>¿En qué quieres invertir?</h2>
+    <div>
+      <div class="bienes-raices">
+        <img src="assets/bienes-raices.jpg" alt="Bienes Raíces">
+        <h3>Bienes Raíces</h3>
       </div>
-      <div class="departamentos" style="position: relative; width: 260px; height: 320px; overflow: hidden; cursor: pointer;">
-        <img src="assets/departamentos.jpg" alt="Departamentos" style="width: 100%; height: 100%; object-fit: cover;">
-        <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 24px; text-align: center; margin: 0; font-weight: 500;">Departamentos</h3>
-      </div>
-      <div class="oficinas"  style="position: relative; width: 260px; height: 320px; overflow: hidden; cursor: pointer;">
-        <img src="assets/oficinas.jpg" alt="Oficinas" style="width: 100%; height: 100%; object-fit: cover;">
-        <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 24px; text-align: center; margin: 0; font-weight: 500;">Oficinas</h3>
-      </div>
-      <div class="terrenos" style="position: relative; width: 260px; height: 320px; overflow: hidden; cursor: pointer;">
-        <img src="assets/terrenos.jpg" alt="Terrenos" style="width: 100%; height: 100%; object-fit: cover;">
-        <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 24px; text-align: center; margin: 0; font-weight: 500;">Terrenos</h3>
+      <div class="tecnologia">
+        <img src="assets/tecnologia.jpg" alt="Tecnología">
+        <h3>Tecnología</h3>
       </div>
     </div>
   </section>
-  <section class="investment-types" style="text-align: center; padding: 60px 20px;">
-  <h2 style="font-size: 36px; margin-bottom: 40px;">¿En qué quieres invertir?</h2>
-  <div style="display: flex; justify-content: center; gap: 120px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto;">
-    <div class="bienes-raices" style="position: relative; width: 360px; height: 420px; overflow: hidden; cursor: pointer;">
-      <img src="assets/bienes-raices.jpg" alt="Bienes Raíces" style="width: 100%; height: 100%; object-fit: cover;">
-      <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 28px; text-align: center; margin: 0; font-weight: 600;">Bienes Raíces</h3>
-    </div>
-    <div class="tecnologia" style="position: relative; width: 360px; height: 420px; overflow: hidden; cursor: pointer;">
-      <img src="assets/tecnologia.jpg" alt="Tecnología" style="width: 100%; height: 100%; object-fit: cover;">
-      <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 28px; text-align: center; margin: 0; font-weight: 600;">Tecnología</h3>
-    </div>
-  </div>
-</section>
 
-  <section class="about-braitec" style="background-color: black; width: 100%; padding: 80px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 40px; justify-content: center;">
-  <div style="flex: 1 1 400px; max-width: 500px;">
-    <div style="position: relative; width: 100%; max-width: 500px;">
-      <img src="assets/bottomimage.png" alt="Braitec Icon" style="width: 100%; border: 0.5px solid rgba(255, 255, 255, 0.4); border-radius: 12px;">
+  <section class="about-braitec">
+    <div>
+      <div>
+        <img src="assets/bottomimage.png" alt="Braitec Icon">
+      </div>
     </div>
-  </div>
-  <div style="flex: 1 1 400px; max-width: 500px;">
-    <h2 style="font-size: 28px; font-weight: bold; margin-bottom: 20px; color: white;">Braitec</h2>
-    <p style="font-size: 16px; margin-bottom: 16px; color: white;">
-    En Braitec fusionamos la experiencia inmobiliaria con innovación tecnológica para redefinir la inversión en bienes raíces.
-    </p>
-    <p style="font-size: 16px; margin-bottom: 24px; color: white;">
-    Utilizamos herramientas digitales avanzadas para identificar oportunidades, automatizar procesos y ofrecer un servicio personalizado, ágil y transparente. Nuestra misión es potenciar la inversión inmobiliaria a través de la tecnología y el conocimiento local.
-    </p>
-    <a href="contacto.html" style="background-color: #BA930C; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Contáctanos</a>
-  </div>
-</section>
+    <div>
+      <h2>Braitec</h2>
+      <p>
+        En Braitec fusionamos la experiencia inmobiliaria con innovación tecnológica para redefinir la inversión en bienes raíces.
+      </p>
+      <p>
+        Utilizamos herramientas digitales avanzadas para identificar oportunidades, automatizar procesos y ofrecer un servicio personalizado, ágil y transparente. Nuestra misión es potenciar la inversión inmobiliaria a través de la tecnología y el conocimiento local.
+      </p>
+      <a href="contacto.html">Contáctanos</a>
+    </div>
+  </section>
 
   <section class="locations-cards">
-      
-    
+  </section>
 
-
-</section>
-
-  <a href="https://wa.me/522211353008" target="_blank" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp" style="width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <a href="https://wa.me/522211353008" target="_blank" class="whatsapp-button">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp">
   </a>
 
-  <footer style="background-color: #000; color: #fff; padding: 60px 20px; font-size: 14px;">
-    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-      <div style="flex: 1 1 200px; margin-bottom: 20px;">
-        <img src="assets/braiteclogo.svg" alt="Braitec Logo" style="height: 100px; margin-bottom: 10px;">
-        <p style="margin: 0;">BIENES RAÍCES, INVERSIÓN & TECNOLOGÍA</p>
+  <footer>
+    <div>
+      <div>
+        <img src="assets/braiteclogo.svg" alt="Braitec Logo">
+        <p>BIENES RAÍCES, INVERSIÓN & TECNOLOGÍA</p>
       </div>
-      <div style="flex: 1 1 150px; margin-bottom: 20px;">
-        <h4 style="margin-bottom: 10px;">Ubicación</h4>
-        <ul style="list-style: none; padding: 0; margin: 0;">
-          <li><a href="#" style="color: #fff; text-decoration: none;">P.º Opera 9, Lomas de Angelópolis</a></li>
-          <li><a href="#" style="color: #fff; text-decoration: none;">San Andrés Cholula</a></li>
-          <li><a href="#" style="color: #fff; text-decoration: none;">Puebla</a></li>
+      <div>
+        <h4>Ubicación</h4>
+        <ul>
+          <li><a href="#">P.º Opera 9, Lomas de Angelópolis</a></li>
+          <li><a href="#">San Andrés Cholula</a></li>
+          <li><a href="#">Puebla</a></li>
         </ul>
       </div>
-      <div style="flex: 1 1 150px; margin-bottom: 20px;">
-        <h4 style="margin-bottom: 10px;">Acceso</h4>
-        <ul style="list-style: none; padding: 0; margin: 0;">
-          <li><a href="propiedades.html" style="color: #fff; text-decoration: none;">Propiedades</a></li>
-          <li><a href="servicios.html" style="color: #fff; text-decoration: none;">Servicios</a></li>
-          <li><a href="contacto.html" style="color: #fff; text-decoration: none;">Contacto</a></li>
+      <div>
+        <h4>Acceso</h4>
+        <ul>
+          <li><a href="propiedades.html">Propiedades</a></li>
+          <li><a href="servicios.html">Servicios</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
         </ul>
       </div>
-      <div style="flex: 1 1 150px; margin-bottom: 20px;">
-        <h4 style="margin-bottom: 10px;">Contacto</h4>
-        <ul style="list-style: none; padding: 0; margin: 0;">
-          <li><a href="#" style="color: #fff; text-decoration: none;">+52 221 135 3008</a></li>
-          <li><a href="#" style="color: #fff; text-decoration: none;">+52 222 227 5573</a></li>
-          <li><a href="#" style="color: #fff; text-decoration: none;">contacto@braitec.com</a></li>
+      <div>
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="#">+52 221 135 3008</a></li>
+          <li><a href="#">+52 222 227 5573</a></li>
+          <li><a href="#">contacto@braitec.com</a></li>
         </ul>
       </div>
     </div>
-    <div style="text-align: center; padding-top: 30px;">
-      <div class="social-icons" style="margin-bottom: 20px;">
+    <div>
+      <div class="social-icons">
         <a href="https://www.facebook.com/braitec"><img src="https://cdn.prod.website-files.com/682fe043039753e3e2eece23/6834939be03a70165600af68_1.png" alt="Facebook"></a>
         <a href="https://www.tiktok.com/@braitecbienesraicess?_t=ZS-8wbf7sOZrke&_r=1"><img src="https://cdn.prod.website-files.com/682fe043039753e3e2eece23/6834939b4dacc1e40eb55f5d_4.png" alt="Tiktok"></a>
         <a href="https://www.instagram.com/braitec_oficial/"><img src="https://cdn.prod.website-files.com/682fe043039753e3e2eece23/6834939bfe7775cb2f328c84_3.png" alt="Instagram"></a>
       </div>
-      <p style="margin: 0;">&copy; 2025 Braitec. Todos los derechos reservados.</p>
+      <p>&copy; 2025 Braitec. Todos los derechos reservados.</p>
     </div>
   </footer>
 
   <script>
-  function toggleMenu() {
-    const navLinks = document.querySelector('.nav-links-index');
-    navLinks.classList.toggle('show');
-  }
-</script>
+    function toggleMenu() {
+      const navLinks = document.querySelector('.nav-links-index');
+      navLinks.classList.toggle('show');
+    }
+
+    // Function to handle location card clicks
+    function searchLocation(locationName) {
+      // Construct the URL with the location as a keyword search
+      const url = new URL('propiedades.php', window.location.origin);
+      
+      // Set default filters for TokkoBroker API compatibility
+      url.searchParams.set('operation_type', '1'); // 1 = Venta (Sale)
+      url.searchParams.set('property_type', '2');  // 2 = Departamento (Apartment)
+      
+      if (locationName && locationName.trim() !== '') {
+        url.searchParams.set('keywords', locationName);
+      }
+      
+      // Redirect to the properties page
+      window.location.href = url.toString();
+    }
+
+    function buscarPropiedades() {
+      const tipo = document.getElementById("tipo").value;
+      const operacion = document.getElementById("operacion").value;
+      const ubicacion = document.getElementById("ubicacion").value;
+
+      const filters = {};
+
+      if (operacion) filters.operation_types = [parseInt(operacion)];
+      if (tipo) filters.property_types = [parseInt(tipo)];
+      if (ubicacion) filters.search = ubicacion;
+
+      const query = encodeURIComponent(JSON.stringify(filters));
+      window.location.href = `propiedades.php?data=${query}`;
+    }
+  </script>
 </body>
 </html>
