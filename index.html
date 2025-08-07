@@ -80,28 +80,28 @@
   <section class="property-types">
     <h2>¿Qué Buscas?</h2>
     <div>
-      <a href="propiedades.php?operation_type=1&property_type=3">
+      <a href="propiedades.php?property_type=3">
         <div class="casas">
           <img src="assets/casas.jpg" alt="Casas">
           <h3>Casas</h3>
         </div>
       </a>
 
-      <a href="propiedades.php?operation_type=1&property_type=2">
+      <a href="propiedades.php?property_type=2">
         <div class="departamentos">
           <img src="assets/departamentos.jpg" alt="Departamentos">
           <h3>Departamentos</h3>
         </div>
       </a>
 
-      <a href="propiedades.php?operation_type=1&property_type=5">
+      <a href="propiedades.php?property_type=5">
         <div class="oficinas">
           <img src="assets/oficinas.jpg" alt="Oficinas">
           <h3>Oficinas</h3>
         </div>
       </a>
       
-      <a href="propiedades.php?operation_type=1&property_type=1">
+      <a href="propiedades.php?property_type=1">
         <div class="terrenos">
           <img src="assets/terrenos.jpg" alt="Terrenos">
           <h3>Terrenos</h3>
@@ -196,15 +196,11 @@
       navLinks.classList.toggle('show');
     }
 
-    // Function to handle location card clicks
+    // Function to handle location card clicks - UPDATED to only pass keywords
     function searchLocation(locationName) {
-      // Construct the URL with the location as a keyword search
       const url = new URL('propiedades.php', window.location.origin);
       
-      // Set default filters for TokkoBroker API compatibility
-      url.searchParams.set('operation_type', '1'); // 1 = Venta (Sale)
-      url.searchParams.set('property_type', '2');  // 2 = Departamento (Apartment)
-      
+      // Only add keywords parameter if location name is provided
       if (locationName && locationName.trim() !== '') {
         url.searchParams.set('keywords', locationName);
       }

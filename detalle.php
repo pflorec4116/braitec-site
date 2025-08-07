@@ -738,23 +738,23 @@ $lng = $data['geo_long'] ?? null;
       const propertyUrl = window.location.href;
       
       // Create formatted WhatsApp message
-      let whatsappMessage = `🏠 *Consulta sobre propiedad*\n\n`;
-      whatsappMessage += `*Mensaje:*\n${message}\n\n`;
-      whatsappMessage += `👤 *Datos de contacto:*\n`;
-      whatsappMessage += `• Nombre: ${name}\n`;
+      let whatsappMessage = `Consulta sobre propiedad\n\n`;
+      whatsappMessage += `\n${message}\n\n`;
+      whatsappMessage += `Datos de contacto:\n`;
+      whatsappMessage += `Nombre: ${name}\n`;
       if (email) {
-        whatsappMessage += `• Email: ${email}\n`;
+        whatsappMessage += ` Email: ${email}\n`;
       }
       if (phone) {
-        whatsappMessage += `• Teléfono: ${phone}\n`;
+        whatsappMessage += ` Teléfono: ${phone}\n`;
       }
-      whatsappMessage += `\n🏡 *Detalles de la propiedad:*\n`;
-      whatsappMessage += `• Título: ${propertyTitle}\n`;
+      whatsappMessage += `\n Detalles de la propiedad:\n`;
+      whatsappMessage += ` Título: ${propertyTitle}\n`;
       if (propertyAddress !== propertyTitle) {
-        whatsappMessage += `• Dirección: ${propertyAddress}\n`;
+        whatsappMessage += ` Dirección: ${propertyAddress}\n`;
       }
-      whatsappMessage += `• Precio: ${propertyPrice}\n`;
-      whatsappMessage += `\n🔗 *Ver propiedad completa:*\n${propertyUrl}`;
+      whatsappMessage += ` Precio: ${propertyPrice}\n`;
+      whatsappMessage += `\Ver propiedad completa:\n${propertyUrl}`;
       
       // Encode message for URL
       const encodedMessage = encodeURIComponent(whatsappMessage);
