@@ -16,17 +16,22 @@ $offset   = ($page - 1) * $perPage;
 
 $apiKey = 'ce96841d3848c65e5e7b2ca2d13bd6069b45f4c7';
 
-// -------------------- FILTROS --------------------
+// -------------------- OPTIMIZED FILTERS --------------------
 $filters = [];
 
-if ($operation !== '' && is_numeric($operation)) {
+// Only add operation_types if a valid selection is made
+if ($operation !== '' && is_numeric($operation) && (int)$operation > 0) {
   $filters["operation_types"] = [(int)$operation];
 }
-if ($propertyType !== '' && is_numeric($propertyType)) {
+
+// Only add property_types if a valid selection is made
+if ($propertyType !== '' && is_numeric($propertyType) && (int)$propertyType > 0) {
   $filters["property_types"] = [(int)$propertyType];
 }
-$filters["price_from"] = is_numeric($minPrice) ? (int)$minPrice : 0;
-$filters["price_to"]   = is_numeric($maxPrice) ? (int)$maxPrice : 999999999;
+
+// Always include price filters (required by Tokko API)
+$filters["price_from"] = is_numeric($minPrice) && (int)$minPrice > 0 ? (int)$minPrice : 0;
+$filters["price_to"]   = is_numeric($maxPrice) && (int)$maxPrice > 0 ? (int)$maxPrice : 999999999;
 
 $dataJson = json_encode($filters);
 $queryString = http_build_query([
@@ -125,11 +130,15 @@ if ($httpCode === 200 && $response) {
 $startIndex = $offset;
 $endIndex   = min($offset + $perPage, $totalCount);
 
-// Debug
+// Enhanced Debug Output
 echo "<!-- DEBUG: page=$page, offset=$offset, totalCount=$totalCount, limit=$perPage -->";
 echo "<!-- URL: " . htmlspecialchars($url) . " -->";
 echo "<!-- JSON filtros: " . json_encode($filters, JSON_PRETTY_PRINT) . " -->";
+echo "<!-- Raw operation_type: '$operation', Raw property_type: '$propertyType' -->";
+echo "<!-- Filters included: " . implode(', ', array_keys($filters)) . " -->";
 echo "<!-- Orden actual: $priceOrder -->";
+
+// Debug property IDs
 foreach ($paginatedProperties as $p) {
   echo "<!-- ID: " . ($p['id'] ?? 'N/A') . " -->";
 }

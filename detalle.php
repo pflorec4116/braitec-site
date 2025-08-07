@@ -38,6 +38,7 @@ $bathrooms   = $data['bathroom_amount'] ?? 'N/D';
 $branch      = html_entity_decode($data['branch']['display_name'] ?? 'Agencia desconocida');
 $totalArea   = $data['total_surface'] ?? 'N/D';
 $photos      = $data['photos'];
+$videos      = $data['videos'] ?? []; // Add videos data
 
 // Bottom Data Section 
 $propertyTitle = html_entity_decode($data['address'] ?? 'Propiedad');
@@ -257,6 +258,107 @@ $lng = $data['geo_long'] ?? null;
       margin-top: 5px;
       display: none;
     }
+
+    /* Media Toggle Buttons */
+    .media-toggle-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    .media-toggle-btn {
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      color: #495057;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .media-toggle-btn:hover {
+      background: #e9ecef;
+      transform: translateY(-1px);
+    }
+
+    .media-toggle-btn.active {
+      background: #BA930C;
+      border-color: #BA930C;
+      color: white;
+      box-shadow: 0 2px 8px rgba(186, 147, 12, 0.3);
+    }
+
+    .media-toggle-btn i {
+      font-size: 16px;
+    }
+
+    /* Disabled state for video button when no videos */
+    .media-toggle-btn.disabled {
+      background: #f8f9fa;
+      border-color: #e9ecef;
+      color: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .media-toggle-btn.disabled:hover {
+      background: #f8f9fa;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    /* Video Container */
+    .video-container {
+      display: none;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .video-container.active {
+      display: block;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-title {
+      background: #f8f9fa;
+      padding: 15px 20px;
+      font-weight: 600;
+      color: #333;
+      border-top: 1px solid #e9ecef;
+    }
+
+    /* Gallery Layout adjustments */
+    .gallery-layout {
+      transition: all 0.3s ease;
+    }
+
+    .gallery-layout.hidden {
+      display: none;
+    }
     
     /* Responsive adjustments */
     @media (max-width: 768px) {
@@ -272,6 +374,18 @@ $lng = $data['geo_long'] ?? null;
       
       .price-amount {
         font-size: 24px;
+      }
+
+      .media-toggle-buttons {
+        flex-direction: row;
+        gap: 8px;
+      }
+
+      .media-toggle-btn {
+        flex: 1;
+        padding: 10px 16px;
+        font-size: 13px;
+        justify-content: center;
       }
     }
   </style>
@@ -303,7 +417,7 @@ $lng = $data['geo_long'] ?? null;
       <a href="propiedades.php?<?= htmlspecialchars($backQuery) ?>" class="volver-btn">← Volver a listado</a>
 
       <!-- Gallery Layout -->
-      <div class="gallery-layout">
+      <div class="gallery-layout" id="photos-container">
         <!-- Main Image -->
         <div class="main-image">
           <?php if (!empty($photos[0]['image'])): ?>
@@ -321,6 +435,39 @@ $lng = $data['geo_long'] ?? null;
             </a>
           <?php endfor; ?>
         </div>
+      </div>
+
+      <!-- Video Container -->
+      <?php if (!empty($videos)): ?>
+      <div class="video-container" id="videos-container">
+        <div class="video-wrapper">
+          <iframe 
+            id="video-iframe"
+            src="<?= htmlspecialchars($videos[0]['player_url']) ?>"
+            title="<?= htmlspecialchars($videos[0]['title'] ?? 'Video de la propiedad') ?>"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <?php if (!empty($videos[0]['title'])): ?>
+        <div class="video-title">
+          <?= htmlspecialchars($videos[0]['title']) ?>
+        </div>
+        <?php endif; ?>
+      </div>
+      <?php endif; ?>
+
+      <!-- Media Toggle Buttons (Photos/Videos) -->
+      <div class="media-toggle-buttons">
+        <button class="media-toggle-btn active" id="photos-btn" onclick="toggleMedia('photos')">
+          <i class="fas fa-images"></i>
+          Fotos (<?= count($photos) ?>)
+        </button>
+        <button class="media-toggle-btn <?= empty($videos) ? 'disabled' : '' ?>" id="videos-btn" onclick="<?= !empty($videos) ? 'toggleMedia(\'videos\')' : '' ?>">
+          <i class="fas fa-play"></i>
+          Videos (<?= count($videos) ?>)
+        </button>
       </div>
 
       <!-- Hidden lightbox images for remaining photos (if more than 5 total) -->
@@ -403,8 +550,7 @@ $lng = $data['geo_long'] ?? null;
                                       id="email" 
                                       name="email" 
                                       class="form-control" 
-                                      placeholder="Correo electrónico" 
-                                      required>
+                                      placeholder="Correo electrónico">
                                   <div class="error-message" id="email-error">Por favor ingresa un correo válido</div>
                               </div>
                               <div class="form-group">
@@ -471,7 +617,34 @@ $lng = $data['geo_long'] ?? null;
   <script src="https://cdn.jsdelivr.net/npm/fslightbox/index.js"></script>
 
   <script>
-     function shareProperty() {
+    // Media toggle functionality
+    function toggleMedia(mediaType) {
+      const photosContainer = document.getElementById('photos-container');
+      const videosContainer = document.getElementById('videos-container');
+      const photosBtn = document.getElementById('photos-btn');
+      const videosBtn = document.getElementById('videos-btn');
+
+      // Don't allow switching to videos if there are none
+      if (mediaType === 'videos' && videosBtn && videosBtn.classList.contains('disabled')) {
+        return;
+      }
+
+      if (mediaType === 'photos') {
+        // Show photos, hide videos
+        if (photosContainer) photosContainer.classList.remove('hidden');
+        if (videosContainer) videosContainer.classList.remove('active');
+        if (photosBtn) photosBtn.classList.add('active');
+        if (videosBtn && !videosBtn.classList.contains('disabled')) videosBtn.classList.remove('active');
+      } else if (mediaType === 'videos') {
+        // Show videos, hide photos
+        if (photosContainer) photosContainer.classList.add('hidden');
+        if (videosContainer) videosContainer.classList.add('active');
+        if (photosBtn) photosBtn.classList.remove('active');
+        if (videosBtn) videosBtn.classList.add('active');
+      }
+    }
+
+    function shareProperty() {
       if (navigator.share) {
         navigator.share({
           title: '<?= addslashes($address) ?>',
@@ -486,7 +659,6 @@ $lng = $data['geo_long'] ?? null;
     // WhatsApp form functionality
     function validateForm() {
       let isValid = true;
-      const requiredFields = ['message', 'name', 'email'];
       
       // Clear previous errors
       document.querySelectorAll('.form-control').forEach(field => {
@@ -496,26 +668,51 @@ $lng = $data['geo_long'] ?? null;
         error.style.display = 'none';
       });
       
-      // Validate required fields
-      requiredFields.forEach(fieldName => {
-        const field = document.getElementById(fieldName);
-        const value = field.value.trim();
+      // Validate name (always required)
+      const nameField = document.getElementById('name');
+      const nameValue = nameField.value.trim();
+      
+      if (!nameValue) {
+        nameField.classList.add('error');
+        document.getElementById('name-error').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Validate message (always required)
+      const messageField = document.getElementById('message');
+      const messageValue = messageField.value.trim();
+      
+      if (!messageValue) {
+        messageField.classList.add('error');
+        document.getElementById('message-error').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Validate email OR phone (at least one required)
+      const emailField = document.getElementById('email');
+      const phoneField = document.getElementById('phone');
+      const emailValue = emailField.value.trim();
+      const phoneValue = phoneField.value.trim();
+      
+      // Check if neither email nor phone is provided
+      if (!emailValue && !phoneValue) {
+        emailField.classList.add('error');
+        phoneField.classList.add('error');
         
-        if (!value) {
-          field.classList.add('error');
-          document.getElementById(fieldName + '-error').style.display = 'block';
+        // Show custom error message for email field
+        const emailError = document.getElementById('email-error');
+        emailError.textContent = 'Ingresa un correo o teléfono para que podamos contactarte.';
+        emailError.style.display = 'block';
+        
+        isValid = false;
+      } else {
+        // If email is provided, validate format
+        if (emailValue && !isValidEmail(emailValue)) {
+          emailField.classList.add('error');
+          document.getElementById('email-error').textContent = 'Ingresa un correo electrónico válido';
+          document.getElementById('email-error').style.display = 'block';
           isValid = false;
         }
-      });
-      
-      // Validate email format
-      const emailField = document.getElementById('email');
-      const emailValue = emailField.value.trim();
-      if (emailValue && !isValidEmail(emailValue)) {
-        emailField.classList.add('error');
-        document.getElementById('email-error').textContent = 'Ingresa un correo electrónico válido';
-        document.getElementById('email-error').style.display = 'block';
-        isValid = false;
       }
       
       return isValid;
@@ -545,7 +742,9 @@ $lng = $data['geo_long'] ?? null;
       whatsappMessage += `*Mensaje:*\n${message}\n\n`;
       whatsappMessage += `👤 *Datos de contacto:*\n`;
       whatsappMessage += `• Nombre: ${name}\n`;
-      whatsappMessage += `• Email: ${email}\n`;
+      if (email) {
+        whatsappMessage += `• Email: ${email}\n`;
+      }
       if (phone) {
         whatsappMessage += `• Teléfono: ${phone}\n`;
       }
@@ -582,25 +781,82 @@ $lng = $data['geo_long'] ?? null;
       const inputs = document.querySelectorAll('.form-control');
       inputs.forEach(input => {
         input.addEventListener('blur', function() {
-          if (this.hasAttribute('required') && !this.value.trim()) {
+          // Handle name and message validation (always required)
+          if ((this.name === 'name' || this.name === 'message') && !this.value.trim()) {
             this.classList.add('error');
             document.getElementById(this.name + '-error').style.display = 'block';
-          } else {
+          } else if (this.name === 'name' || this.name === 'message') {
             this.classList.remove('error');
             document.getElementById(this.name + '-error').style.display = 'none';
+          }
+          
+          // Handle email/phone validation (either/or required)
+          if (this.name === 'email' || this.name === 'phone') {
+            const emailField = document.getElementById('email');
+            const phoneField = document.getElementById('phone');
+            const emailValue = emailField.value.trim();
+            const phoneValue = phoneField.value.trim();
+            
+            // If either field has value, clear errors from both
+            if (emailValue || phoneValue) {
+              emailField.classList.remove('error');
+              phoneField.classList.remove('error');
+              document.getElementById('email-error').style.display = 'none';
+              document.getElementById('phone-error').style.display = 'none';
+              
+              // But still validate email format if email is provided
+              if (emailValue && !isValidEmail(emailValue)) {
+                emailField.classList.add('error');
+                document.getElementById('email-error').textContent = 'Ingresa un correo electrónico válido';
+                document.getElementById('email-error').style.display = 'block';
+              }
+            }
           }
         });
         
         input.addEventListener('input', function() {
-          if (this.classList.contains('error') && this.value.trim()) {
+          // Handle name and message real-time validation
+          if ((this.name === 'name' || this.name === 'message') && this.classList.contains('error') && this.value.trim()) {
             this.classList.remove('error');
             document.getElementById(this.name + '-error').style.display = 'none';
+          }
+          
+          // Handle email/phone real-time validation
+          if (this.name === 'email' || this.name === 'phone') {
+            const emailField = document.getElementById('email');
+            const phoneField = document.getElementById('phone');
+            const emailValue = emailField.value.trim();
+            const phoneValue = phoneField.value.trim();
+            
+            // If either field has value, clear errors from both
+            if (emailValue || phoneValue) {
+              emailField.classList.remove('error');
+              phoneField.classList.remove('error');
+              document.getElementById('email-error').style.display = 'none';
+              document.getElementById('phone-error').style.display = 'none';
+            }
+            
+            // Real-time email format validation
+            if (this.name === 'email' && emailValue && !isValidEmail(emailValue)) {
+              emailField.classList.add('error');
+              document.getElementById('email-error').textContent = 'Ingresa un correo electrónico válido';
+              document.getElementById('email-error').style.display = 'block';
+            }
           }
         });
       });
       
       // Initialize map
       initPropertyMap();
+      
+      // Initialize media display
+      <?php if (!empty($videos) && empty($photos)): ?>
+      // If only videos exist, show videos by default
+      toggleMedia('videos');
+      <?php else: ?>
+      // Default to photos if they exist
+      toggleMedia('photos');
+      <?php endif; ?>
     });
 
     // Initialize Google Maps for property location
@@ -663,10 +919,11 @@ $lng = $data['geo_long'] ?? null;
         }
         <?php endif; ?>
     }
-function toggleMenu() {
-  const navLinks = document.querySelector('.nav-links');
-  navLinks.classList.toggle('show');
-}
+
+    function toggleMenu() {
+      const navLinks = document.querySelector('.nav-links');
+      navLinks.classList.toggle('show');
+    }
     
   </script>
 </body>

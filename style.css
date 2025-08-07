@@ -1407,10 +1407,11 @@ textarea.form-control {
   gap: 10px;
   height: 550px;
   align-items: stretch;
-  margin-bottom: 30px;
+  margin-bottom: 70px;
   max-width: 1400px;
   margin-left: auto;
   margin-right: auto;
+  
 }
 
 .main-image {
