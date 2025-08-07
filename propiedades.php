@@ -1,6 +1,7 @@
 <?php
 ini_set('memory_limit', '256M'); // Avoid OOM error
 
+// Get filter parameters from URL
 $operation    = $_GET['operation_type'] ?? '';
 $propertyType = $_GET['property_type']   ?? '';
 $minPrice     = $_GET['price_from']      ?? '';
@@ -16,160 +17,203 @@ $offset   = ($page - 1) * $perPage;
 
 $apiKey = 'ce96841d3848c65e5e7b2ca2d13bd6069b45f4c7';
 
-// -------------------- OPTIMIZED FILTERS --------------------
-$filters = [];
+// -------------------- BUILD DATA ARRAY ACCORDING TO TOKKO SPECS --------------------
+$data = [
+    // Location settings - use "all locations" as default
+    'current_location_id' => 0,
+    'current_localization_type' => 'country',
+    
+    // Price range - use very broad defaults to include everything
+    'price_from' => 0,
+    'price_to' => 99999999999,
+    
+    // Operation types - empty array means "any operation type"
+    'operation_types' => [],
+    
+    // Property types - empty array means "any property type"  
+    'property_types' => [],
+    
+    // Currency - empty string means "any currency"
+    'currency' => '',
+    
+    // Additional filters container
+    'filters' => []
+];
 
-// Only add operation_types if a valid selection is made
+// -------------------- APPLY USER SELECTIONS --------------------
+
+// Set operation type if selected
 if ($operation !== '' && is_numeric($operation) && (int)$operation > 0) {
-  $filters["operation_types"] = [(int)$operation];
+    $data['operation_types'] = [(int)$operation];
 }
 
-// Only add property_types if a valid selection is made
+// Set property type if selected
 if ($propertyType !== '' && is_numeric($propertyType) && (int)$propertyType > 0) {
-  $filters["property_types"] = [(int)$propertyType];
+    $data['property_types'] = [(int)$propertyType];
 }
 
-// Always include price filters (required by Tokko API)
-$filters["price_from"] = is_numeric($minPrice) && (int)$minPrice > 0 ? (int)$minPrice : 0;
-$filters["price_to"]   = is_numeric($maxPrice) && (int)$maxPrice > 0 ? (int)$maxPrice : 999999999;
+// Set price range if specified
+if (is_numeric($minPrice) && (int)$minPrice > 0) {
+    $data['price_from'] = (int)$minPrice;
+}
 
-$dataJson = json_encode($filters);
+if (is_numeric($maxPrice) && (int)$maxPrice > 0) {
+    $data['price_to'] = (int)$maxPrice;
+}
+
+// -------------------- BUILD API REQUEST --------------------
+$dataJson = json_encode($data);
 $queryString = http_build_query([
-  'data'  => $dataJson,
-  'limit' => 200,
-  'offset'=> 0,
-  'key'   => $apiKey
+    'data' => $dataJson,
+    'limit' => 200,  // Get more results for better filtering
+    'offset' => 0,
+    'key' => $apiKey,
+    'lang' => 'es_ar'
 ]);
 
 $url = "https://www.tokkobroker.com/api/v1/property/search/?" . $queryString;
 
-// -------------------- API REQUEST --------------------
+// -------------------- MAKE API REQUEST WITH CURL --------------------
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+curl_setopt($ch, CURLOPT_TIMEOUT, 15);           // 15 second timeout
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);    // 5 second connection timeout
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; PropertySearch/1.0)');
+
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$curlError = curl_error($ch);
 curl_close($ch);
 
-$paginatedProperties = [];
+$allProperties = [];
 $totalCount = 0;
 
-if ($httpCode === 200 && $response) {
-  $json = json_decode($response, true);
-  $allProperties = $json['objects'] ?? [];
+// Handle API response
+if ($curlError) {
+    echo "<!-- CURL Error: " . htmlspecialchars($curlError) . " -->";
+} elseif ($httpCode !== 200) {
+    echo "<!-- HTTP Error: $httpCode -->";
+} elseif ($response) {
+    $json = json_decode($response, true);
+    if ($json && isset($json['objects'])) {
+        $allProperties = $json['objects'];
+    } else {
+        echo "<!-- JSON Error: " . json_last_error_msg() . " -->";
+    }
+    }
+    
+    // -------------------- CLIENT-SIDE FILTERING --------------------
+    
+    // Filter by bedrooms (since API doesn't have this filter)
+    if (!empty($bedroomValues)) {
+        $allProperties = array_filter($allProperties, function ($p) use ($bedroomValues) {
+            return isset($p['suite_amount']) && in_array((int)$p['suite_amount'], $bedroomValues);
+        });
+    }
+    
+    // Enhanced keyword/location filtering
+    if ($keywords !== '') {
+        $k = mb_strtolower($keywords);
+        $allProperties = array_filter($allProperties, function ($p) use ($k) {
+            // Build comprehensive search blob with all location fields
+            $searchFields = [
+                // Basic property info
+                $p['address'] ?? '',
+                $p['short_location'] ?? '',
+                $p['description'] ?? '',
+                $p['publication_title'] ?? '',
+                
+                // Branch/Agency info
+                $p['branch']['display_name'] ?? '',
+                $p['branch']['name'] ?? '',
+                
+                // Operation type
+                $p['operations'][0]['operation_type']['name'] ?? '',
+                
+                // Enhanced Location Fields
+                $p['location']['full_location'] ?? '',
+                $p['location']['name'] ?? '',
+                $p['location']['short_location'] ?? '',
+                
+                // Parent location (for nested locations like neighborhoods within cities)
+                $p['location']['parent_location']['name'] ?? '',
+                $p['location']['parent_location']['full_location'] ?? '',
+                $p['location']['parent_location']['short_location'] ?? '',
+                
+                // Grandparent location (for deeper nesting like neighborhood > city > state)
+                $p['location']['parent_location']['parent_location']['name'] ?? '',
+                $p['location']['parent_location']['parent_location']['full_location'] ?? '',
+                
+                // Alternative location fields that might exist
+                $p['location']['city'] ?? '',
+                $p['location']['state'] ?? '',
+                $p['location']['zone'] ?? '',
+                $p['location']['neighborhood'] ?? '',
+            ];
+            
+            $searchBlob = mb_strtolower(implode(' ', array_filter($searchFields)));
+            return strpos($searchBlob, $k) !== false;
+        });
+    }
+    
+    // Sort by price if requested
+    if (in_array($priceOrder, ['asc', 'desc'])) {
+        usort($allProperties, function ($a, $b) use ($priceOrder) {
+            $priceA = $a['operations'][0]['prices'][0]['price'] ?? 0;
+            $priceB = $b['operations'][0]['prices'][0]['price'] ?? 0;
+            return $priceOrder === 'asc' ? $priceA <=> $priceB : $priceB <=> $priceA;
+        });
+    }
+    
+    $totalCount = count($allProperties);
 
-  // --- Recámaras ---
-  if (!empty($bedroomValues)) {
-    $allProperties = array_filter($allProperties, function ($p) use ($bedroomValues) {
-      return isset($p['suite_amount']) && in_array((int)$p['suite_amount'], $bedroomValues);
-    });
-  }
 
-  // --- ENHANCED Keyword/Location Filtering ---
-  if ($keywords !== '') {
-    $k = mb_strtolower($keywords);
-    $allProperties = array_filter($allProperties, function ($p) use ($k) {
-      // Build comprehensive search blob with all location fields
-      $searchFields = [
-        // Basic property info
-        $p['address'] ?? '',
-        $p['short_location'] ?? '',
-        $p['description'] ?? '',
-        $p['publication_title'] ?? '',
-        
-        // Branch/Agency info
-        $p['branch']['display_name'] ?? '',
-        $p['branch']['name'] ?? '',
-        
-        // Operation type
-        $p['operations'][0]['operation_type']['name'] ?? '',
-        
-        // Enhanced Location Fields
-        $p['location']['full_location'] ?? '',
-        $p['location']['name'] ?? '',
-        $p['location']['short_location'] ?? '',
-        
-        // Parent location (for nested locations like neighborhoods within cities)
-        $p['location']['parent_location']['name'] ?? '',
-        $p['location']['parent_location']['full_location'] ?? '',
-        $p['location']['parent_location']['short_location'] ?? '',
-        
-        // Grandparent location (for deeper nesting like neighborhood > city > state)
-        $p['location']['parent_location']['parent_location']['name'] ?? '',
-        $p['location']['parent_location']['parent_location']['full_location'] ?? '',
-        
-        // Alternative location fields that might exist
-        $p['location']['city'] ?? '',
-        $p['location']['state'] ?? '',
-        $p['location']['zone'] ?? '',
-        $p['location']['neighborhood'] ?? '',
-        
-        // Additional fields that might contain location info
-        $p['geo_lat'] ? 'lat:' . $p['geo_lat'] : '', // Sometimes useful for coordinate searches
-        $p['geo_long'] ? 'lng:' . $p['geo_long'] : '',
-      ];
-      
-      $searchBlob = mb_strtolower(implode(' ', array_filter($searchFields)));
-      return strpos($searchBlob, $k) !== false;
-    });
-  }
-
-  // --- Ordenamiento por Precio ---
-  if (in_array($priceOrder, ['asc', 'desc'])) {
-    usort($allProperties, function ($a, $b) use ($priceOrder) {
-      $priceA = $a['operations'][0]['prices'][0]['price'] ?? 0;
-      $priceB = $b['operations'][0]['prices'][0]['price'] ?? 0;
-      return $priceOrder === 'asc' ? $priceA <=> $priceB : $priceB <=> $priceA;
-    });
-  }
-
-  $totalCount = count($allProperties);
-  $paginatedProperties = array_slice($allProperties, $offset, $perPage);
-}
-
+// -------------------- PAGINATION --------------------
+$paginatedProperties = array_slice($allProperties, $offset, $perPage);
 $startIndex = $offset;
-$endIndex   = min($offset + $perPage, $totalCount);
+$endIndex = min($offset + $perPage, $totalCount);
 
-// Enhanced Debug Output
+// -------------------- DEBUG OUTPUT --------------------
 echo "<!-- DEBUG: page=$page, offset=$offset, totalCount=$totalCount, limit=$perPage -->";
 echo "<!-- URL: " . htmlspecialchars($url) . " -->";
-echo "<!-- JSON filtros: " . json_encode($filters, JSON_PRETTY_PRINT) . " -->";
-echo "<!-- Raw operation_type: '$operation', Raw property_type: '$propertyType' -->";
-echo "<!-- Filters included: " . implode(', ', array_keys($filters)) . " -->";
-echo "<!-- Orden actual: $priceOrder -->";
-
-// Debug property IDs
-foreach ($paginatedProperties as $p) {
-  echo "<!-- ID: " . ($p['id'] ?? 'N/A') . " -->";
+echo "<!-- Data sent to API: " . htmlspecialchars($dataJson) . " -->";
+echo "<!-- Formatted data: " . json_encode($data, JSON_PRETTY_PRINT) . " -->";
+echo "<!-- HTTP Response Code: $httpCode -->";
+if ($curlError) {
+    echo "<!-- CURL Error: " . htmlspecialchars($curlError) . " -->";
 }
+echo "<!-- User filters: operation=$operation, propertyType=$propertyType, minPrice=$minPrice, maxPrice=$maxPrice -->";
+echo "<!-- Keywords: '$keywords', Bedrooms: " . json_encode($bedroomValues) . ", Order: $priceOrder -->";
 
 // Helper function to build comprehensive keywords for frontend filtering
 function buildPropertyKeywords($property) {
-  $keywordFields = [
-    $property['address'] ?? '',
-    $property['branch']['display_name'] ?? '',
-    $property['branch']['name'] ?? '',
+    $keywordFields = [
+        $property['address'] ?? '',
+        $property['branch']['display_name'] ?? '',
+        $property['branch']['name'] ?? '',
+        
+        // All location fields
+        $property['location']['full_location'] ?? '',
+        $property['location']['name'] ?? '',
+        $property['location']['short_location'] ?? '',
+        $property['location']['parent_location']['name'] ?? '',
+        $property['location']['parent_location']['full_location'] ?? '',
+        $property['location']['parent_location']['parent_location']['name'] ?? '',
+        $property['location']['city'] ?? '',
+        $property['location']['state'] ?? '',
+        $property['location']['zone'] ?? '',
+        $property['location']['neighborhood'] ?? '',
+        
+        // Property details for general search
+        $property['suite_amount'] ?? '',
+        $property['bathroom_amount'] ?? '',
+        $property['operations'][0]['prices'][0]['price'] ?? '',
+        $property['operations'][0]['prices'][0]['currency'] ?? '',
+    ];
     
-    // All location fields
-    $property['location']['full_location'] ?? '',
-    $property['location']['name'] ?? '',
-    $property['location']['short_location'] ?? '',
-    $property['location']['parent_location']['name'] ?? '',
-    $property['location']['parent_location']['full_location'] ?? '',
-    $property['location']['parent_location']['parent_location']['name'] ?? '',
-    $property['location']['city'] ?? '',
-    $property['location']['state'] ?? '',
-    $property['location']['zone'] ?? '',
-    $property['location']['neighborhood'] ?? '',
-    
-    // Property details for general search
-    $property['suite_amount'] ?? '',
-    $property['bathroom_amount'] ?? '',
-    $property['operations'][0]['prices'][0]['price'] ?? '',
-    $property['operations'][0]['prices'][0]['currency'] ?? '',
-  ];
-  
-  return strtolower(implode(' ', array_filter($keywordFields)));
+    return strtolower(implode(' ', array_filter($keywordFields)));
 }
 ?>
 
@@ -180,6 +224,18 @@ function buildPropertyKeywords($property) {
   <title>Propiedades</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Preview Description Truncation */
+    .preview-description {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+      max-height: calc(1.4em * 4); /* 4 lines * line-height */
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -206,7 +262,7 @@ function buildPropertyKeywords($property) {
     </button>
   </div>
 
-  <!-- SINGLE Filters Container with BOTH id and content -->
+  <!-- Filters Container -->
   <div class="propiedades-filters" id="propiedadesFilters">
     <form method="GET" action="propiedades.php" class="propiedades-form" id="filter-form">
       <label>Filtros</label>
@@ -258,7 +314,7 @@ function buildPropertyKeywords($property) {
     </form>
   </div>
 
-    <!-- NEW: Main Container with Left Panel (Properties) and Right Panel (Preview) -->
+    <!-- Property List Container -->
     <div id="property-list">
       <div class="propiedades-header-bar">
         <div class="propiedades-count-sort">
@@ -289,7 +345,7 @@ function buildPropertyKeywords($property) {
               $price     = $priceVal ? "$ " . number_format($priceVal) . " " . $currency : 'Precio no disponible';
               $image     = $p['photos'][0]['image'] ?? '';
               
-              // NEW: Extract coordinates and additional data for preview
+              // Extract coordinates and additional data for preview
               $lat = $p['geo_lat'] ?? null;
               $lng = $p['geo_long'] ?? null;
               $description = htmlspecialchars($p['description'] ?? $address);
@@ -344,7 +400,7 @@ function buildPropertyKeywords($property) {
         </div>
       </div>
 
-      <!-- Paginación -->
+      <!-- Pagination -->
       <div class="pagination">
         <?php
           $totalPages = max(1, ceil($totalCount / $perPage));
@@ -375,7 +431,7 @@ function buildPropertyKeywords($property) {
     </div>
   </div>
 
-  <!-- Google Maps API - REPLACE WITH YOUR API KEY -->
+  <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCA0Z-kfOhEkoXusS1TJzmM1ZpNvCnBZow&libraries=geometry"></script>
 
 <script>
@@ -547,15 +603,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const toggleText = document.getElementById('filterToggleText');
   const toggleIcon = document.getElementById('filterToggleIcon');
   
-  console.log('Mobile toggle elements:', { mobileToggle, filtersContainer, toggleText, toggleIcon }); // Debug log
-  
   if (mobileToggle && filtersContainer) {
     mobileToggle.addEventListener('click', function(e) {
       e.preventDefault();
-      console.log('Mobile filter toggle clicked!'); // Debug log
       
       const isActive = filtersContainer.classList.contains('mobile-active');
-      console.log('Current state - isActive:', isActive); // Debug log
       
       if (isActive) {
         // Hide filters
@@ -563,18 +615,14 @@ document.addEventListener('DOMContentLoaded', function() {
         mobileToggle.classList.remove('active');
         toggleText.textContent = 'Filtros';
         toggleIcon.textContent = '▼';
-        console.log('Hiding filters'); // Debug log
       } else {
         // Show filters
         filtersContainer.classList.add('mobile-active');
         mobileToggle.classList.add('active');
         toggleText.textContent = 'Ocultar Filtros';
         toggleIcon.textContent = '▲';
-        console.log('Showing filters'); // Debug log
       }
     });
-  } else {
-    console.error('Mobile filter toggle elements not found!', { mobileToggle, filtersContainer });
   }
   
   // Handle window resize
@@ -659,7 +707,7 @@ document.querySelectorAll('.custom-multiselect').forEach(wrapper => {
   });
 });
 
-// Mobile menu toggle (if you have hamburger menu)
+// Mobile menu toggle
 const mobileMenuToggle = document.getElementById('mobile-menu');
 if (mobileMenuToggle) {
   mobileMenuToggle.addEventListener('click', function() {
@@ -679,3 +727,5 @@ function checkForActiveFilters() {
   });
 }
 </script>
+</body>
+</html>
