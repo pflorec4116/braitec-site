@@ -61,11 +61,10 @@
 .logo-index img{
   height:128px !important; /* Much smaller for mobile */
   width:auto !important;
-  margin:0 !important; /* Kill all margins */
   padding:0 !important; /* Kill all padding including padding-left: 113px */
   display:block !important;
   max-height:100% !important;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 /* Drawer (index uses #mobile-menu) */
@@ -138,11 +137,10 @@
 .navbar[data-mobile-nav] .logo img {
   height: 128px !important; /* Much smaller for mobile */
   width: auto !important;
-  margin: 0 !important; /* Kill all margins including margin-top */
   padding: 0 !important; /* Kill all padding including padding-left: 100px */
   display: block !important;
   max-height: 100% !important;
-  margin-top: 0px;
+  margin-top: 15px;
 }
 
 /* Drawer (other pages use .nav-links) */
@@ -199,7 +197,7 @@
    CONTENT SPACING
 -----------------------------------*/
 .page-content {
-  padding-top: 80px !important; /* Add space below fixed navbar */
+  padding-top: 120px !important; /* More space below fixed navbar */
 }
 
 #property-list {
@@ -209,6 +207,7 @@
 .propiedades-header-bar {
   margin-top: 0 !important; /* Remove any conflicting top margin */
 }
+
 /* --------------------------------
    HERO
 -----------------------------------*/
@@ -401,16 +400,74 @@ footer img{ height:64px; }
 /* --------------------------------
    PROPERTY DETAILS
 -----------------------------------*/
-.property-details-main{ padding:0 16px; margin:20px auto; }
+.property-details-main{ padding:0; margin:20px auto; } /* Remove all side padding */
 .property-details-container{ display:grid; grid-template-columns:1fr; gap:20px; }
 .details-grid, .map-section{ padding:20px; }
 .map-container{ height:240px; }
 
-/* Gallery */
+/* Gallery - GENERAL rules for most pages */
 .gallery-layout{ flex-direction:column; height:auto; gap:12px; margin-bottom:20px; }
 .main-image{ width:100%; height:250px; }
 .thumbnail-grid{ width:100%; grid-template-columns:repeat(3,1fr); gap:8px; }
 .thumbnail-grid a{ height:80px; }
+
+/* --------------------------------
+   DETALLES.PHP SPECIFIC GALLERY OVERRIDE
+-----------------------------------*/
+.detalle-container {
+  padding: 0 !important; /* Remove any container padding */
+  margin: 0 ;
+  margin-top: 50px;
+}
+
+.detalle-container .gallery-layout {
+  flex-direction: column !important;
+  height: auto !important;
+  gap: 12px !important;
+  margin-bottom: 20px !important;
+  padding: 0 !important; /* No side padding - full width */
+  width: 100vw !important; /* Full viewport width */
+  margin-left: calc(-50vw + 50%) !important; /* Break out of container */
+}
+
+.detalle-container .main-image {
+  width: 100% !important;
+  height: 280px !important;
+}
+
+.detalle-container .thumbnail-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  grid-template-rows: 140px 140px !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin: 0;
+  padding: 0 8px !important; /* Small padding only for thumbnails */
+  box-sizing: border-box !important;
+  margin-bottom: -300px;
+}
+
+.detalle-container .thumbnail-grid a {
+  display: block !important;
+  width: 100% !important;
+  height: 140px !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.detalle-container .thumbnail-grid img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
 
 /* --------------------------------
    MISC
