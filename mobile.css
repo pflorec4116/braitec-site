@@ -472,7 +472,7 @@ footer img{ height:64px; }
   margin-bottom: 20px !important;
   padding: 0 !important; /* No side padding - full width */
   width: 100vw !important; /* Full viewport width */
-  margin-left: calc(-50vw + 50%) !important; /* Break out of container */
+ 
 }
 
 .detalle-container .main-image {
