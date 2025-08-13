@@ -37,13 +37,22 @@ img {
   height: auto !important;
 }
 
-
 /* ==============================
    Braitec — Mobile-only styles
    (<=768px). Desktop untouched.
    ============================== */
 
 @media (max-width: 768px) {
+
+/* Fixed spacing constants for all gallery elements */
+:root {
+  --gallery-main-height: 280px;
+  --gallery-thumbnail-height: 140px;
+  --gallery-gap: 12px;
+  --gallery-thumb-gap: 8px;
+  --gallery-bottom-margin: 16px;
+  --gallery-content-spacing: 12px;
+}
 
 /* Utility */
 .no-scroll { overflow: hidden; }
@@ -341,7 +350,6 @@ img {
 .about-braitec h2{ font-size:22px; margin-bottom:12px; margin-top: -150px;}
 .about-braitec p{ font-size:15px; max-width:300px;}
 
-
 /* --------------------------------
    WHATSAPP FLOAT
 -----------------------------------*/
@@ -445,66 +453,72 @@ footer img{ height:64px; }
 /* --------------------------------
    PROPERTY DETAILS
 -----------------------------------*/
-.property-details-main{ padding:0; margin:20px auto; } /* Remove all side padding */
+.property-details-main{ 
+  padding:0 16px !important; 
+  margin:20px auto !important; 
+}
 .property-details-container{ display:grid; grid-template-columns:1fr; gap:20px; }
 .details-grid, .map-section{ padding:20px; }
 .map-container{ height:240px; }
 
-/* Gallery - GENERAL rules for most pages */
-.gallery-layout{ flex-direction:column; height:auto; gap:12px; margin-bottom:20px; }
-.main-image{ width:100%; height:250px; }
-.thumbnail-grid{ width:100%; grid-template-columns:repeat(3,1fr); gap:8px; }
-.thumbnail-grid a{ height:80px; }
-
 /* --------------------------------
-   DETALLES.PHP SPECIFIC GALLERY OVERRIDE - REDUCED BOTTOM SPACING
+   STANDARDIZED GALLERY SYSTEM - FIXED SIZING & SPACING
+   Consistent across ALL pages (detalles.php, propiedades.php, etc.)
 -----------------------------------*/
-.detalle-container {
-  padding: 0 !important; /* Remove any container padding */
-  margin: 0;
-  margin-top: 50px;
-}
 
+/* Base Gallery Container - Apply to all gallery containers */
+.gallery-layout,
 .detalle-container .gallery-layout {
+  display: flex !important;
   flex-direction: column !important;
-  height: auto !important;
-  gap: 16px !important; /* Default spacing between main image and grid */
-  margin-bottom: 0 !important; /* Removed all bottom margin */
-  padding: 0 !important; /* No side padding - full width */
-  width: 100vw !important; /* Full viewport width */
+  width: 90vw !important; /* Use 90vw instead of 100vw for better centering */
+  margin-left: calc(-45vw + 50%) !important; /* Center the 90vw gallery */
+  margin-bottom: var(--gallery-bottom-margin) !important; /* 16px fixed bottom spacing */
+  padding: 0 !important;
+  gap: var(--gallery-gap) !important; /* 12px fixed gap between main image and thumbnails */
+  box-sizing: border-box !important;
 }
 
+/* Main Image - Standardized sizing */
+.main-image,
 .detalle-container .main-image {
   width: 100% !important;
-  height: 280px !important;
-  margin-bottom: 0 !important; /* Remove any extra margin */
+  height: var(--gallery-main-height) !important; /* 280px fixed height across all pages */
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
 }
 
+.main-image img,
 .detalle-container .main-image img {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
+  object-position: center !important;
   display: block !important;
   margin: 0 !important;
   padding: 0 !important;
 }
 
+/* Thumbnail Grid - Standardized 2x2 layout */
+.thumbnail-grid,
 .detalle-container .thumbnail-grid {
   display: grid !important;
   grid-template-columns: repeat(2, 1fr) !important;
-  grid-template-rows: 140px 140px !important;
-  gap: 8px !important;
+  grid-template-rows: var(--gallery-thumbnail-height) var(--gallery-thumbnail-height) !important; /* 140px fixed row heights */
+  gap: var(--gallery-thumb-gap) !important; /* 8px fixed gap between thumbnails */
   width: 100% !important;
-  margin: 0 !important; /* Remove any negative margins */
-  padding: 0 8px !important; /* Small padding only for thumbnails */
+  margin: 0 !important;
+  padding: 0 !important; /* Remove side padding for full width within the 90vw container */
   box-sizing: border-box !important;
-  margin-bottom: 0 !important; /* Ensure no extra bottom margin */
 }
 
+.thumbnail-grid a,
 .detalle-container .thumbnail-grid a {
   display: block !important;
   width: 100% !important;
-  height: 140px !important;
+  height: var(--gallery-thumbnail-height) !important; /* 140px fixed thumbnail height */
   border-radius: 12px !important;
   overflow: hidden !important;
   margin: 0 !important;
@@ -512,6 +526,7 @@ footer img{ height:64px; }
   box-sizing: border-box !important;
 }
 
+.thumbnail-grid img,
 .detalle-container .thumbnail-grid img {
   width: 100% !important;
   height: 100% !important;
@@ -523,10 +538,35 @@ footer img{ height:64px; }
   border: none !important;
 }
 
-/* Reduce spacing for content that comes after the gallery */
-.detalle-container .gallery-layout + * {
-  margin-top: 4px !important; /* Minimal top margin for following content */
+/* Container Standardization */
+.detalle-container,
+.property-details-container {
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-top: 64px !important; /* Fixed top spacing below navbar */
 }
+
+/* Content After Gallery - Standardized spacing */
+.gallery-layout + *,
+.detalle-container .gallery-layout + * {
+  margin-top: var(--gallery-content-spacing) !important; /* 12px fixed spacing after gallery */
+  padding: 0 16px !important; /* Standard content padding */
+}
+
+/* Override any existing gallery rules to ensure consistency */
+.property-details-main .gallery-layout,
+.propiedades-main-container .gallery-layout {
+  margin-bottom: var(--gallery-bottom-margin) !important; /* Consistent bottom spacing */
+}
+
+/* Standard content wrapper spacing */
+.detalle-wrapper,
+.property-wrapper {
+  padding: 0 16px !important;
+  margin: 0 auto !important;
+  max-width: 100% !important;
+}
+
 /* --------------------------------
    MISC
 -----------------------------------*/
@@ -550,6 +590,7 @@ footer img{ height:64px; }
 /* --------------------------------
    CONTACTO.HTML MOBILE STYLES
 -----------------------------------*/
+@media (max-width: 768px) {
 .contact-form-section {
   padding: 120px 16px 40px !important; /* Top spacing below fixed navbar */
   min-height: 100vh !important;
@@ -721,10 +762,12 @@ footer img{ height:64px; }
   max-width: 100% !important;
   box-sizing: border-box !important;
 }
+}
 
 /* --------------------------------
    FOOTER MOBILE OPTIMIZATION
 -----------------------------------*/
+@media (max-width: 768px) {
 footer {
   padding: 24px 16px 20px !important; /* Reduced top padding */
   background-color: #000 !important;
@@ -769,118 +812,4 @@ footer > div:first-child > div:first-child p {
 footer > div:first-child > div:not(:first-child) {
   flex: none !important;
   margin-bottom: 0 !important;
-  text-align: left !important;
-}
-
-footer h4 {
-  margin: 0 0 12px 0 !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  color: white !important;
-}
-
-footer ul {
-  list-style: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-footer ul li {
-  margin-bottom: 8px !important;
-}
-
-footer ul li:last-child {
-  margin-bottom: 0 !important;
-}
-
-footer a {
-  color: rgba(255,255,255,0.8) !important;
-  text-decoration: none !important;
-  font-size: 14px !important;
-  transition: color 0.3s ease !important;
-}
-
-footer a:hover {
-  color: #BA930C !important;
-}
-
-/* Bottom section with social icons and copyright */
-footer > div:last-child {
-  text-align: center !important;
-  padding-top: 30px !important;
-  margin: 0 !important;
-}
-
-/* Social Icons Section */
-.social-icons {
-  display: flex !important;
-  justify-content: center !important;
-  gap: 20px !important;
-  margin-bottom: 20px !important;
-}
-
-.social-icons a {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 50px !important;
-  height: 50px !important;
-  border: 2px solid white !important;
-  border-radius: 50% !important;
-  transition: all 0.3s ease !important;
-  background-color: transparent !important;
-  text-decoration: none !important;
-  position: relative !important;
-}
-
-.social-icons a:hover {
-  background-color: white !important;
-  transform: translateY(-2px) !important;
-}
-
-.social-icons img {
-  width: 20px !important;
-  height: 20px !important;
-  object-fit: contain !important;
-  transition: filter 0.3s ease !important;
-  display: block !important;
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.social-icons a:hover img {
-  filter: invert(1) !important;
-}
-
-/* Copyright text */
-footer > div:last-child p {
-  margin: 0 !important;
-  font-size: 12px !important;
-  color: rgba(255,255,255,0.6) !important;
-  line-height: 1.4 !important;
-}
-
-/* WhatsApp button adjustment */
-.whatsapp-button {
-  bottom: 20px !important;
-  right: 16px !important;
-  z-index: 1000 !important;
-}
-
-.whatsapp-button img {
-  width: 56px !important;
-  height: 56px !important;
-  border-radius: 50% !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-}
-
-/* Safe area support for devices with notches */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  footer {
-    padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
-  }
-}
+  text-align: left !important; }}
