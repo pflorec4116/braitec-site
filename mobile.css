@@ -5,6 +5,14 @@
 
 @media (max-width: 768px) {
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+
 /* Utility */
 .no-scroll { overflow: hidden; }
 
@@ -488,34 +496,5 @@ footer img{ height:64px; }
 }
 
 } /* End mobile media query */
-/* 1) Kill horizontal scroll on mobile */
-html, body {
-  max-width: 100%;
-  overflow-x: hidden;
-  margin: 0;
-  padding: 0;
-}
-
-/* 2) Never let images push the layout wider */
-img, video, canvas, iframe {
-  max-width: 100%;
-  height: auto;
-}
-
-/* 3) detalles.php: stop breaking out of the viewport */
-.detalle-container .gallery-layout {
-  width: 100% !important;        /* instead of 100vw */
-  margin-left: 0 !important;     /* remove calc(-50vw + 50%) */
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  box-sizing: border-box;
-}
-
-/* 4) Ensure the mobile drawer never causes horizontal overflow when hidden */
-#mobile-menu,
-.navbar .nav-links,
-.navbarindex #mobile-menu {
-  overflow-x: hidden;            /* just in case */
-}
 
 
