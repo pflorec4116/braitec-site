@@ -203,6 +203,25 @@ html, body {
   color: #BA930C;
 }
 
+ .hamburger,
+  .menu-toggle { display:none; }
+
+  /* Your existing desktop layouts can stay in main.css.
+     If needed, ensure both ULs are inline-row on desktop: */
+  .nav-links-index,
+  .nav-links {
+    position: static;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    display: flex;
+    gap: 10rem;        /* match your desktop spacing */
+    background: none;
+    padding: 0;
+  }
+
+
 h1 {
   text-align: center;
   margin-top: 32px;
@@ -1924,645 +1943,88 @@ footer > div:last-child {
   background-color: #a08209;
 }
 
-/* Mobile Styles */
+/* --- Buttons on mobile --- */
 @media (max-width: 768px) {
-  
-  /* ========================================
-     MOBILE OVERFLOW FIXES
-     ======================================== */
-  
-  .herosectionindex {
-    overflow: visible !important;
-    position: relative;
-  }
-  
-  .navbarindex {
-    overflow: visible !important;
-    position: relative;
+  .hamburger,
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px; height: 48px;
+    padding: 0; border-radius: 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.25);
+    cursor: pointer; user-select: none;
+    z-index: 10001; /* above drawer */
   }
 
-  .navbar {
-    overflow: visible !important;
-    position: relative;
-    padding: 1rem;
-    height: 60px;
+  /* 3 bars for both button types */
+  .hamburger > span,
+  .menu-toggle .bar {
+    display: block; width: 24px; height: 2px; background: #fff;
+    border-radius: 1px; transition: transform .2s ease, opacity .2s ease;
   }
-  
-  /* ========================================
-     NAVIGATION
-     ======================================== */
-  
-  .logo img {
-    height: 150px;
-    padding-left: 20px;
-    margin-top: 5px;
-  }
-  
+  /* stack bars with gap */
+  .hamburger { gap: 6px; }
+  .menu-toggle .bar + .bar { margin-top: 6px; }
+
+  /* to X animation */
+  .hamburger.is-open span:nth-child(1),
+  .menu-toggle.is-open .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .hamburger.is-open span:nth-child(2),
+  .menu-toggle.is-open .bar:nth-child(2) { opacity: 0; }
+  .hamburger.is-open span:nth-child(3),
+  .menu-toggle.is-open .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+}
+
+/* --- MOBILE DRAWER for BOTH ULs (index + inner pages) --- */
+@media (max-width: 768px) {
+  .nav-links-index,
   .nav-links {
-    display: none; /* Hide navigation links on mobile - implement hamburger menu if needed */
-  }
-  
-  /* ========================================
-     PAGE CONTENT & SPACING
-     ======================================== */
-  
-  .page-content {
-    padding: 10px 0;
-  }
-  
-  h1 {
-    margin-top: 16px;
-    font-size: 1.8rem;
-  }
-  
-  /* ========================================
-     MOBILE FILTER SYSTEM
-     ======================================== */
-  
-  /* Show mobile filter toggle button */
-  .mobile-filter-toggle {
-    display: block !important;
-  }
-  
-  /* Hide filters by default on mobile */
-  .propiedades-filters {
-    display: none !important;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.3s ease-in-out;
-    margin: 10px 15px 20px 15px;
-    padding: 20px 15px;
-    background: #f7f7f7;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-     max-height: 70vh; /* ADD THIS LINE */
-    overflow-y: auto; /* ADD THIS LINE */
-  }
-  
-  /* Show filters when active */
-  .propiedades-filters.mobile-active {
-       display: block !important;
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-    visibility: visible !important;
-    max-height: 70vh !important; 
-    overflow-y: auto !important;
-    box-sizing: border-box !important; /* ADD THIS */
-    flex-shrink: 0 !important; /* ADD THIS */ }
-
-  /* Mobile filter form layout */
-  .propiedades-filters.mobile-active .propiedades-form {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 15px !important;
-    align-items: stretch !important;
-  }
-
-  /* Style form elements for mobile */
-  .propiedades-filters.mobile-active .propiedades-form label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    font-size: 14px;
-    color: #333;
-  }
-
-  .propiedades-filters.mobile-active .propiedades-form input,
-  .propiedades-filters.mobile-active .propiedades-form select {
-    width: 100% !important;
-    max-width: none !important;
-    min-width: auto !important;
-    padding: 12px 15px !important;
-    font-size: 16px !important; /* Prevents zoom on iOS */
-    border: 1px solid #ddd !important;
-    border-radius: 8px !important;
-    background-color: white !important;
-    color: #333 !important;
-    box-sizing: border-box !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  .propiedades-filters.mobile-active .propiedades-form input:focus,
-  .propiedades-filters.mobile-active .propiedades-form select:focus {
-    outline: none;
-    border-color: #BA930C;
-    box-shadow: 0 0 0 2px rgba(186, 147, 12, 0.2);
-  }
-
-  /* Mobile multiselect */
-  .propiedades-filters.mobile-active .custom-multiselect {
-    max-width: none !important;
-    width: 100% !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  .propiedades-filters.mobile-active .multiselect-trigger {
-    padding: 12px 15px !important;
-    font-size: 16px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    border: 1px solid #ddd !important;
-    border-radius: 8px !important;
-    background-color: white !important;
-  }
-
-  .propiedades-filters.mobile-active .multiselect-options {
-    width: 100%;
-    left: 0;
-    right: 0;
-    box-sizing: border-box;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    margin-top: 5px;
-  }
-
-  /* Mobile bottom filters */
-  .propiedades-filters.mobile-active .bottomfilters {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 15px !important;
-    padding-left: 0 !important;
-    align-items: stretch !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    max-height: 15px !important;
-  }
-
-  .propiedades-filters.mobile-active .orderfilterwrapper {
-    min-width: auto !important;
-    width: 100% !important;
-  }
-
-  .propiedades-filters.mobile-active .orderfilterwrapper select {
-    width: 100% !important;
-    max-width: none !important;
-    padding: 12px 15px !important;
-    font-size: 16px !important;
-    border: 1px solid #ddd !important;
-    border-radius: 8px !important;
-    background-color: white !important;
-  }
-
-  .propiedades-filters.mobile-active .actionbuttons {
-    display: flex !important;
-    gap: 10px !important;
-    flex-wrap: wrap !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  .propiedades-filters.mobile-active .apply-btn,
-  .propiedades-filters.mobile-active .clear-btn {
-    flex: 1 !important;
-    padding: 12px 20px !important;
-    text-align: center !important;
-    font-size: 16px !important;
-    border-radius: 8px !important;
-    min-width: 120px !important;
-    text-decoration: none !important;
-    font-weight: 600 !important;
-    transition: all 0.3s ease !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  .propiedades-filters.mobile-active .apply-btn {
-    background-color: #000 !important;
-    color: white !important;
-    border: none !important;
-  }
-
-  .propiedades-filters.mobile-active .apply-btn:hover {
-    background-color: #333 !important;
-  }
-
-  .propiedades-filters.mobile-active .clear-btn {
-    background-color: transparent !important;
-    color: #333 !important;
-    border: 1px solid #ddd !important;
-  }
-
-  .propiedades-filters.mobile-active .clear-btn:hover {
-    background-color: #f5f5f5 !important;
-    border-color: #999 !important;
-  }
-
-
-  /* Animation for smooth toggle */
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-      max-height: 0;
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-      max-height: 1000px;
-    }
-  }
-
-  .propiedades-filters.mobile-active {
-    animation: slideDown 0.3s ease-in-out;
-  }
-  
-  /* ========================================
-     PROPERTY LISTINGS LAYOUT
-     ======================================== */
-  
-  /* Header adjustments */
-  .propiedades-header-bar {
-    margin: 10px 15px;
-    padding: 10px 0;
-  }
-  
-  .propiedades-page-title {
-    font-size: 18px;
-  }
-  
-  .propiedades-subcount {
-    font-size: 14px;
-  }
-  
-  /* Main container - single column */
-  .propiedades-main-container {
-    flex-direction: column;
-    padding: 0 15px 20px 15px;
-    gap: 0;
-  }
-  
-  /* Left panel (properties) - full width */
-  .propiedades-left-panel {
-    flex: none;
-    width: 100%;
-  }
-  
-  /* HIDE right panel completely on mobile */
-  .propiedades-right-panel {
-    display: none !important;
-  }
-  
-  /* ========================================
-     PROPERTY CARDS
-     ======================================== */
-  
-  .property-card {
-    flex-direction: column;
-    height: auto;
-    margin: 10px 0;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .property-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  }
-  
-  .property-image-container {
-    width: 100%;
-    height: 200px;
-    flex-shrink: 0;
-  }
-  
-  .property-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .property-info {
-    width: 100%;
-    padding: 16px;
+    position: fixed;
+    inset: 64px 0 0 0; /* full screen below navbar */
+    background: #000;
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
+
+    /* off-canvas hidden state */
+    transform: translateX(100%);
+    opacity: 0; visibility: hidden; pointer-events: none;
+
+    transition: transform .25s ease, opacity .2s ease, visibility .2s ease;
+    z-index: 9999; list-style: none; margin: 0;
   }
-  
-  .property-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0;
-    line-height: 1.3;
+  .nav-links-index.open,
+  .nav-links.open {
+    transform: translateX(0);
+    opacity: 1; visibility: visible; pointer-events: auto;
   }
-  
-  .property-location {
-    font-size: 12px;
-    color: #777;
-    margin: 0;
+
+  .nav-links-index li a,
+  .nav-links li a {
+    color: #fff; text-decoration: none;
+    font-size: 16px; padding: 10px 0;
+    transition: color .2s ease;
   }
-  
-  .property-description {
-    font-size: 12px;
-    color: #555;
-    margin: 0;
-    line-height: 1.4;
-  }
-  
-  .property-details {
-    display: flex;
-    gap: 20px;
-    font-size: 12px;
-    margin: 8px 0;
-    flex-wrap: wrap;
-  }
-  
-  .property-price {
-    font-size: 18px;
-    color: #BA930C;
-    font-weight: 600;
-    margin: 8px 0;
-  }
-  
-  .property-btn-black {
-    padding: 12px 20px;
-    margin: 8px 0 0 0;
-    font-size: 14px;
-    border-radius: 8px;
-    text-align: center;
-    align-self: stretch;
-    font-weight: 500;
-  }
-  
-  /* ========================================
-     PAGINATION
-     ======================================== */
-  
-  .pagination {
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 20px 15px;
-    gap: 8px;
-  }
-  
-  .pagination-link {
-    padding: 8px 12px;
-    font-size: 14px;
-    border-radius: 6px;
-    min-width: 40px;
-    text-align: center;
-  }
-  
-  #pagination {
-    justify-content: center;
-    margin: 20px 15px;
-  }
-  
-  #pagination button {
-    padding: 8px 12px;
-    font-size: 14px;
-    min-width: 40px;
-  }
-  
-  /* ========================================
-     PROPERTY DETAILS PAGE (if applicable)
-     ======================================== */
-  
-  .property-details-main {
-    padding: 0 15px;
-    margin: 20px auto;
-  }
-  
-  .property-details-container {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  
-  .property-details-title {
-    font-size: 20px;
-  }
-  
-  .property-details-subtitle {
-    font-size: 14px;
-  }
-  
-  .details-grid,
-  .map-section {
-    padding: 20px;
-    margin-top: 20px;
-  }
-  
-  .details-items {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
-  .map-container {
-    height: 250px;
-  }
-  
-  /* ========================================
-     GALLERY (Detail Page)
-     ======================================== */
-  
-  .gallery-layout {
-    flex-direction: column;
-    height: auto;
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-  
-  .main-image {
-    width: 100%;
-    height: 250px;
-  }
-  
-  .thumbnail-grid {
-    width: 100%;
-    height: auto;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto;
-    gap: 8px;
-  }
-  
-  .thumbnail-grid a {
-    height: 80px;
-  }
-  
-  /* ========================================
-     FORMS & CONTACT
-     ======================================== */
-  
-  .price-contact-card {
-    padding: 20px;
-    margin-top: 20px;
-  }
-  
-  .price-amount {
-    font-size: 24px;
-  }
-  
-  .form-control {
-    padding: 12px;
-    font-size: 16px; /* Prevents zoom on iOS */
-  }
-  
-  .btn-whatsapp,
-  .btn-submit,
-  .btn-credit {
-    padding: 14px 20px;
-    font-size: 16px;
-  }
-  
-  /* ========================================
-     HERO SECTION (if on same page)
-     ======================================== */
-  
-  .herosectionindex {
-    height: 80vh;
-    padding: 0 1rem;
-  }
-  
-  .hero-content h1 {
-    font-size: 1.8rem;
-    text-align: center;
-    margin-bottom: 1.5rem;
-  }
-  
-  .hero-search-form {
-    flex-direction: column;
-    gap: 15px;
-    padding: 20px 15px;
-  }
-  
-  .hero-search-form input,
-  .hero-search-form select,
-  .hero-search-form button {
-    width: 100%;
-    font-size: 16px;
-    padding: 12px 15px;
-  }
-  
-  .search-button {
-    margin-right: 0;
-  }
-  
-  /* ========================================
-     UTILITY CLASSES
-     ======================================== */
-  
-  /* Hide elements on mobile */
-  .mobile-hide {
-    display: none !important;
-  }
-  
-  /* Show elements only on mobile */
-  .mobile-show {
-    display: block !important;
-  }
-  
-  /* Responsive text sizes */
-  .mobile-text-sm {
-    font-size: 14px !important;
-  }
-  
-  .mobile-text-xs {
-    font-size: 12px !important;
-  }
-  
-  /* Responsive spacing */
-  .mobile-p-sm {
-    padding: 10px !important;
-  }
-  
-  .mobile-m-sm {
-    margin: 10px !important;
-  }
+  .nav-links-index li a:hover,
+  .nav-links li a:hover,
+  .nav-links-index li a.active,
+  .nav-links li a.active,
+  .nav-links-index li a:focus,
+  .nav-links li a:focus { color: #BA930C; }
 }
 
-/* ========================================
-   TABLET RESPONSIVENESS (769px - 1024px)
-   ======================================== */
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  
-  .propiedades-main-container {
-    padding: 15px;
-    gap: 20px;
-  }
-  
-  .propiedades-left-panel {
-    flex: 0 0 60%;
-  }
-  
-  .propiedades-right-panel {
-    flex: 1;
-    position: sticky;
-    top: 100px;
-  }
-  
-  .property-card {
-    height: 220px;
-  }
-  
-  .property-title {
-    font-size: 16px;
-  }
-  
-  .property-image-container {
-    width: 35%;
-  }
-  
-  .property-info {
-    width: 65%;
-    padding: 12px;
-  }
-  
-  .propiedades-filters {
-    padding: 15px 30px;
-  }
-  
-  .propiedades-form input,
-  .propiedades-form select {
-    min-width: 160px;
-    max-width: 180px;
-  }
-}
-
-/* ========================================
-   DESKTOP - Ensure filters always show
-   ======================================== */
-
+/* --- DESKTOP guard rails (both menus inline) --- */
 @media (min-width: 769px) {
-  /* Hide mobile toggle button on desktop */
-  .mobile-filter-toggle {
-    display: none !important;
+  .hamburger, .menu-toggle { display: none; }
+
+  .nav-links-index,
+  .nav-links {
+    position: static; transform: none; opacity: 1; visibility: visible; pointer-events: auto;
+    display: flex; background: none; padding: 0; margin: 0;
+    /* your gap/spacing can stay in style.css; these are safe defaults */
+    gap: 10rem;
   }
-  
-  /* Ensure filters are always visible on desktop */
-  .propiedades-filters {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
-  }
-}
-
-/* ========================================
-   JAVASCRIPT HELPER CLASSES
-   ======================================== */
-
-/* For JavaScript toggle functionality */
-.js-hidden {
-  display: none !important;
-}
-
-.js-visible {
-  display: block !important;
-}
-
-.js-fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }

@@ -5,24 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Braitec</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="mobile.css" media="(max-width: 768px)">
   <link rel="icon" href="assets/braiteclogo.svg" type="image/svg+xml">
 </head>
 <body>
-  <nav class="navbarindex">
-    <a href="index.html" class="logo-index"> 
-      <img src="assets/braiteclogoclean.png" alt="Braitec Logo"> 
-    </a>
-    <div class="hamburger" onclick="toggleMenu()">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-    <ul class="nav-links-index">
-      <li><a href="propiedades.php">Propiedades</a></li>
-      <li><a href="servicios.html">Servicios</a></li>
-      <li><a href="contacto.html">Contacto</a></li>
-    </ul>
-  </nav>
+<nav class="navbarindex">
+  <a href="index.html" class="logo-index">
+    <img src="assets/braiteclogoclean.png" alt="Braitec Logo">
+  </a>
+
+    <ul class="nav-links-index" id="mobile-menu">
+    <li><a href="propiedades.php">Propiedades</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="contacto.html">Contacto</a></li>
+  </ul>
+
+  <button class="hamburger" aria-label="Abrir menú" aria-controls="mobile-menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+</nav>
+
+ 
 
   <main class="herosectionindex">
     <div class="hero-content">
@@ -138,7 +142,7 @@
       <p>
         Utilizamos herramientas digitales avanzadas para identificar oportunidades, automatizar procesos y ofrecer un servicio personalizado, ágil y transparente. Nuestra misión es potenciar la inversión inmobiliaria a través de la tecnología y el conocimiento local.
       </p>
-      <a href="contacto.html">Contáctanos</a>
+      <a class="contactobtn" href="contacto.html">Contáctanos</a>
     </div>
   </section>
 
@@ -191,38 +195,110 @@
   </footer>
 
   <script>
-    function toggleMenu() {
-      const navLinks = document.querySelector('.nav-links-index');
-      navLinks.classList.toggle('show');
+/* ===== NAV: Hamburger ===== */
+(function () {
+  // Ensure DOM is ready before binding
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMenu);
+  } else {
+    initMenu();
+  }
+
+  function initMenu() {
+    const btn  = document.querySelector('.hamburger');
+    const menu = document.getElementById('mobile-menu');
+
+    if (!btn || !menu) {
+      console.warn('[nav] Missing .hamburger or #mobile-menu');
+      return;
     }
 
-    // Function to handle location card clicks - UPDATED to only pass keywords
-    function searchLocation(locationName) {
-      const url = new URL('propiedades.php', window.location.origin);
-      
-      // Only add keywords parameter if location name is provided
-      if (locationName && locationName.trim() !== '') {
-        url.searchParams.set('keywords', locationName);
+    const closeMenu = () => {
+      menu.classList.remove('open');
+      btn.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('no-scroll');
+    };
+
+    btn.addEventListener('click', () => {
+      const opening = !menu.classList.contains('open');
+      menu.classList.toggle('open', opening);
+      btn.classList.toggle('is-open', opening);
+      btn.setAttribute('aria-expanded', opening ? 'true' : 'false');
+      document.body.classList.toggle('no-scroll', opening);
+    });
+
+    // Close on link click and on ESC
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+  }
+})();
+
+/* ===== Keep your existing app functions (unchanged) ===== */
+
+// Function to handle location card clicks - UPDATED to only pass keywords
+function searchLocation(locationName) {
+  const url = new URL('propiedades.php', window.location.origin);
+
+  // Only add keywords parameter if location name is provided
+  if (locationName && locationName.trim() !== '') {
+    url.searchParams.set('keywords', locationName);
+  }
+
+  // Redirect to the properties page
+  window.location.href = url.toString();
+}
+
+function buscarPropiedades() {
+  const tipo = document.getElementById("tipo")?.value;
+  const operacion = document.getElementById("operacion")?.value;
+  const ubicacion = document.getElementById("ubicacion")?.value;
+
+  const filters = {};
+
+  if (operacion) filters.operation_types = [parseInt(operacion)];
+  if (tipo) filters.property_types = [parseInt(tipo)];
+  if (ubicacion) filters.search = ubicacion;
+
+  const query = encodeURIComponent(JSON.stringify(filters));
+  window.location.href = `propiedades.php?data=${query}`;
+}
+
+(function () {
+  const mq = window.matchMedia('(max-width: 768px)');
+  const nav = document.querySelector('.navbarindex');
+  const menu = document.getElementById('mobile-menu');
+
+  if (!nav || !menu) return;
+
+  // Create a placeholder so we can put the menu back in the same spot
+  let placeholder = document.createComment('menu-anchor');
+  if (!menu.nextSibling) nav.appendChild(placeholder);
+  else nav.insertBefore(placeholder, menu.nextSibling);
+
+  function placeForViewport() {
+    if (mq.matches) {
+      // MOBILE: move menu to body as a sibling after <nav>
+      if (menu.parentElement !== document.body) {
+        document.body.insertBefore(menu, nav.nextSibling);
       }
-      
-      // Redirect to the properties page
-      window.location.href = url.toString();
+    } else {
+      // DESKTOP: move menu back into nav at the placeholder
+      if (placeholder.parentNode && menu.parentElement !== nav) {
+        placeholder.parentNode.insertBefore(menu, placeholder);
+      }
+      // Ensure drawer state is reset on desktop
+      menu.classList.remove('open');
+      document.body.classList.remove('no-scroll');
+      const btn = document.querySelector('.hamburger');
+      btn && btn.classList.remove('is-open');
     }
+  }
 
-    function buscarPropiedades() {
-      const tipo = document.getElementById("tipo").value;
-      const operacion = document.getElementById("operacion").value;
-      const ubicacion = document.getElementById("ubicacion").value;
+  placeForViewport();
+  mq.addEventListener('change', placeForViewport);
+})();
+</script>
 
-      const filters = {};
-
-      if (operacion) filters.operation_types = [parseInt(operacion)];
-      if (tipo) filters.property_types = [parseInt(tipo)];
-      if (ubicacion) filters.search = ubicacion;
-
-      const query = encodeURIComponent(JSON.stringify(filters));
-      window.location.href = `propiedades.php?data=${query}`;
-    }
-  </script>
 </body>
 </html>

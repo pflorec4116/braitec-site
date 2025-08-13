@@ -1,0 +1,433 @@
+/* ==============================
+   Braitec — Mobile-only styles
+   (<=768px). Desktop untouched.
+   ============================== */
+
+@media (max-width: 768px) {
+
+/* Utility */
+.no-scroll { overflow: hidden; }
+
+/* --------------------------------
+   HAMBURGER (shared for both navs)
+-----------------------------------*/
+.hamburger{
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  gap:6px; width:48px; height:48px; padding:0;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:12px; cursor:pointer; user-select:none;
+  position:relative; z-index:2100;
+}
+.hamburger span{
+  width:24px; height:2px; background:#fff; border-radius:1px;
+  transition:transform .2s ease, opacity .2s ease;
+}
+.hamburger.is-open span:nth-child(1){ transform: translateY(8px) rotate(45deg); }
+.hamburger.is-open span:nth-child(2){ opacity:0; }
+.hamburger.is-open span:nth-child(3){ transform: translateY(-8px) rotate(-45deg); }
+
+/* --------------------------------
+   INDEX NAVBAR  (index.html)
+-----------------------------------*/
+.navbarindex{
+  position:fixed !important; 
+  top:0 !important; 
+  left:0 !important; 
+  right:0 !important; 
+  height:64px !important;
+  display:flex !important; 
+  align-items:center !important; 
+  justify-content:flex-start !important; /* Logo left, hamburger right */
+  padding:0 16px 0 8px !important; /* Small left padding, normal right */
+  background:rgba(0,0,0,.5) !important; 
+  backdrop-filter:blur(8px) !important;
+  z-index:2000 !important;
+  box-sizing:border-box !important;
+}
+
+.logo-index{ 
+  display:flex !important; 
+  align-items:center !important; 
+  justify-content:flex-start !important;
+  margin-right:auto !important; /* Push hamburger to the right */
+  margin-left:0 !important;
+  padding:0 !important; /* Kill any padding */
+  position:static !important; /* Kill any absolute positioning */
+  left:auto !important;
+  transform:none !important; /* Kill any transform centering */
+  flex:0 0 auto !important;
+}
+.logo-index img{
+  height:128px !important; /* Much smaller for mobile */
+  width:auto !important;
+  margin:0 !important; /* Kill all margins */
+  padding:0 !important; /* Kill all padding including padding-left: 113px */
+  display:block !important;
+  max-height:100% !important;
+  margin-top: 10px;
+}
+
+/* Drawer (index uses #mobile-menu) */
+.navbarindex #mobile-menu{
+  position:fixed; inset:64px 0 0 0;
+  background:#000; padding:24px;
+  display:flex; flex-direction:column; gap:16px;
+  transform:translateX(100%);
+  transition:transform .25s ease, opacity .2s ease, visibility .2s ease;
+  z-index:2050; list-style:none; margin:0;
+  opacity:0; visibility:hidden; pointer-events:none;
+}
+.navbarindex #mobile-menu.open{
+  transform:translateX(0); opacity:1; visibility:visible; pointer-events:auto;
+}
+.navbarindex #mobile-menu li a{
+  color:#fff; text-decoration:none; display:block; font-size:16px; padding:10px 0;
+  transition:color .2s ease;
+}
+.navbarindex #mobile-menu li a:hover,
+.navbarindex #mobile-menu li a:focus,
+.navbarindex #mobile-menu li a.active{ color:#BA930C; }
+
+/* Hamburger positioning for index */
+.navbarindex .hamburger {
+  margin-left:auto !important; /* Ensures it stays on the right */
+  margin-right:0 !important;
+  position:static !important;
+  right:auto !important;
+  flex:0 0 auto !important;
+}
+
+/* --------------------------------
+   OTHER PAGES NAVBAR (e.g. propiedades.php)
+   <nav class="navbar" data-mobile-nav> ... <ul class="nav-links"> ...
+-----------------------------------*/
+.navbar,
+.navbar[data-mobile-nav]{
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 64px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important; /* Logo left, hamburger right */
+  background: rgba(0,0,0,.65) !important;
+  backdrop-filter: blur(8px) !important;
+  z-index: 2000 !important;
+  padding: 0 16px 0 8px !important; /* Small left padding, normal right */
+  box-sizing: border-box !important;
+}
+
+.navbar .logo,
+.navbar[data-mobile-nav] .logo {
+  flex: 0 0 auto !important;         /* don't stretch or center */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  margin-right: auto !important; /* Push hamburger to the right */
+  margin-left: 0 !important;
+  padding: 0 !important; /* Kill any padding */
+  position: static !important; /* Kill any absolute positioning */
+  left: auto !important;
+  transform: none !important; /* Kill any transform centering */
+  text-align: left !important; /* override any centering */
+}
+
+.navbar .logo img,
+.navbar[data-mobile-nav] .logo img {
+  height: 128px !important; /* Much smaller for mobile */
+  width: auto !important;
+  margin: 0 !important; /* Kill all margins including margin-top */
+  padding: 0 !important; /* Kill all padding including padding-left: 100px */
+  display: block !important;
+  max-height: 100% !important;
+  margin-top: 0px;
+}
+
+/* Drawer (other pages use .nav-links) */
+.navbar .nav-links,
+.navbar[data-mobile-nav] .nav-links{
+  position:fixed; inset:64px 0 0 0;
+  background:#000; padding:24px;
+  display:flex; flex-direction:column; gap:16px;
+  transform:translateX(100%);
+  transition:transform .25s ease, opacity .2s ease, visibility .2s ease;
+  z-index:2050; list-style:none; margin:0;
+  opacity:0; visibility:hidden; pointer-events:none;
+}
+.navbar .nav-links.open,
+.navbar[data-mobile-nav] .nav-links.open{
+  transform:translateX(0); opacity:1; visibility:visible; pointer-events:auto;
+}
+.navbar .nav-links li a,
+.navbar[data-mobile-nav] .nav-links li a{
+  color:#fff; text-decoration:none; display:block; font-size:16px; padding:10px 0;
+  transition:color .2s ease;
+}
+.navbar .nav-links li a:hover,
+.navbar .nav-links li a:focus,
+.navbar .nav-links li a.active,
+.navbar[data-mobile-nav] .nav-links li a:hover,
+.navbar[data-mobile-nav] .nav-links li a:focus,
+.navbar[data-mobile-nav] .nav-links li a.active{ color:#BA930C; }
+
+/* Hamburger positioning for other pages */
+.navbar .hamburger,
+.navbar[data-mobile-nav] .hamburger {
+  margin-left: auto !important; /* Ensures it stays on the right */
+  margin-right: 0 !important;
+  position: static !important;
+  right: auto !important;
+  flex: 0 0 auto !important;
+}
+
+/* ===== CONTAINER OVERRIDE (if containers are centering content) ===== */
+.navbarindex .container,
+.navbar .container,
+.navbar[data-mobile-nav] .container {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+/* --------------------------------
+   CONTENT SPACING
+-----------------------------------*/
+.page-content {
+  padding-top: 80px !important; /* Add space below fixed navbar */
+}
+
+#property-list {
+  padding-top: 20px !important; /* Additional spacing for property list */
+}
+
+.propiedades-header-bar {
+  margin-top: 0 !important; /* Remove any conflicting top margin */
+}
+/* --------------------------------
+   HERO
+-----------------------------------*/
+.herosectionindex{
+  height:auto; min-height:calc(100vh - 64px);
+  padding:96px 16px 24px; text-align:left;
+}
+.hero-content h1{
+  font-size:clamp(22px,5vw,28px); line-height:1.25; margin:0 0 16px;
+}
+.highlight{ color:#BA930C; }
+
+/* Search bar */
+.search-bar{
+  display:grid; grid-template-columns:1fr; gap:12px;
+  padding:12px; border-radius:12px;
+  background:rgba(255,255,255,0.08); backdrop-filter:blur(8px);
+}
+.search-field{ padding:0; }
+.search-field select,
+.search-field input{
+  width:100%; border:1px solid rgba(255,255,255,0.8);
+  border-radius:10px; padding:12px 14px; font-size:16px;
+  background-color:transparent; color:#fff;
+  background-position:right 12px center; background-size:14px 14px;
+}
+.search-field select:focus,
+.search-field input:focus{
+  outline:none; border-color:#BA930C; box-shadow:0 0 0 2px rgba(186,147,12,0.25);
+}
+.search-button{
+  width:100%; margin:4px 0 0; padding:12px 16px;
+  border-radius:10px; font-size:16px;
+}
+
+/* --------------------------------
+   FEATURED LOCATIONS
+-----------------------------------*/
+.featured-locations .location-card{
+  position:relative; overflow:hidden; border-radius:0; max-height:300px;
+}
+.featured-locations .location-card > img{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  min-width:100%; min-height:100%; width:auto; height:auto; display:block;
+  object-fit:unset !important; object-position:unset !important;
+}
+.featured-locations .location-card:hover > img{
+  transform:translate(-50%,-50%) scale(1.03);
+}
+
+/* --------------------------------
+   PROPERTY TYPES
+-----------------------------------*/
+.property-types{ padding:32px 16px; }
+.property-types h2{ font-size:24px; margin-bottom:16px; }
+.property-types > div:last-child{
+  display:grid; grid-template-columns:1fr 1fr; gap:12px;
+}
+.casas, .departamentos, .oficinas, .terrenos{
+  width:100%; height:160px; border-radius:12px; overflow:hidden;
+}
+.casas h3, .departamentos h3, .oficinas h3, .terrenos h3{ font-size:18px; }
+
+/* --------------------------------
+   INVESTMENT TYPES
+-----------------------------------*/
+.investment-types{ padding:32px 16px; }
+.investment-types h2{ font-size:24px; margin-bottom:16px; }
+.investment-types > div:last-child{
+  display:grid; grid-template-columns:1fr; gap:12px;
+}
+.bienes-raices, .tecnologia{
+  width:100%; height:200px; border-radius:12px; overflow:hidden;
+}
+.bienes-raices h3, .tecnologia h3{ font-size:20px; }
+
+/* --------------------------------
+   ABOUT BRAITEC
+-----------------------------------*/
+.about-braitec{
+  padding:32px 16px; text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+}
+.about-braitec img{
+  max-width:180px; display:block; margin:0 auto 12px; padding:0;
+}
+.about-braitec h2{ font-size:22px; margin-bottom:12px; }
+.about-braitec p{ font-size:15px; max-width:300px; }
+
+/* --------------------------------
+   WHATSAPP FLOAT
+-----------------------------------*/
+.whatsapp-button{ bottom:88px; right:16px; }
+.whatsapp-button img{ width:56px; height:56px; }
+
+/* --------------------------------
+   FOOTER
+-----------------------------------*/
+footer{ padding:32px 16px; }
+footer > div:first-child{ margin-right: auto; }
+footer img{ height:64px; }
+
+/* --------------------------------
+   PROPERTY LISTINGS / PREVIEW
+-----------------------------------*/
+.propiedades-main-container{
+  flex-direction:column; padding:0 16px 24px; gap:0;
+}
+.propiedades-right-panel{ display:none !important; }
+.property-card{
+  flex-direction:column; height:auto; margin:12px 0; border-radius:12px;
+}
+.property-image-container{ width:100%; height:200px; }
+.property-info{ width:100%; padding:14px; gap:8px; }
+.property-title{ font-size:16px; max-width:250px; }
+.property-price{ font-size:18px; color:#BA930C; }
+
+/* Property Filters Mobile */
+.mobile-filter-container {
+  display: block !important;
+  padding: 16px;
+}
+
+.mobile-filter-toggle {
+  display: block !important;
+  width: 100%;
+  max-width: 200px;
+  padding: 12px 20px;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.propiedades-filters {
+  display: none !important;
+  margin: 0 16px 20px 16px !important;
+  padding: 20px !important;
+  background: #f7f7f7 !important;
+  border-radius: 12px !important;
+}
+
+.propiedades-filters.mobile-active {
+  display: block !important;
+}
+
+.propiedades-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 15px !important;
+}
+
+.propiedades-form input,
+.propiedades-form select {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: auto !important;
+  flex: none !important;
+  box-sizing: border-box !important;
+}
+
+.bottomfilters {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 15px !important;
+  padding-left: 0 !important;
+}
+
+.orderfilterwrapper {
+  width: 100% !important;
+}
+
+.actionbuttons {
+  width: 100% !important;
+  gap: 10px !important;
+}
+
+/* Pagination */
+.pagination, #pagination{ justify-content:center; gap:8px; margin:16px 0; }
+.pagination-link, #pagination button{
+  padding:8px 12px; font-size:14px; border-radius:8px;
+}
+
+/* --------------------------------
+   PROPERTY DETAILS
+-----------------------------------*/
+.property-details-main{ padding:0 16px; margin:20px auto; }
+.property-details-container{ display:grid; grid-template-columns:1fr; gap:20px; }
+.details-grid, .map-section{ padding:20px; }
+.map-container{ height:240px; }
+
+/* Gallery */
+.gallery-layout{ flex-direction:column; height:auto; gap:12px; margin-bottom:20px; }
+.main-image{ width:100%; height:250px; }
+.thumbnail-grid{ width:100%; grid-template-columns:repeat(3,1fr); gap:8px; }
+.thumbnail-grid a{ height:80px; }
+
+/* --------------------------------
+   MISC
+-----------------------------------*/
+.mobile-hide{ display:none !important; }
+.mobile-show{ display:block !important; }
+.property-btn-black{ margin-left:10px; }
+
+/* --------------------------------
+   NAV LINKS DESKTOP OVERRIDE KILL
+-----------------------------------*/
+.nav-links-index,
+.nav-links {
+  gap: 1rem !important; /* Much smaller gap on mobile */
+  padding-right: 0 !important; /* Kill large padding */
+  margin-top: 0 !important; /* Kill margin */
+  margin-right: 0 !important; /* Kill margin */
+}
+
+} /* End mobile media query */

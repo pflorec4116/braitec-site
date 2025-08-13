@@ -132,6 +132,7 @@ $lng = $data['geo_long'] ?? null;
   <title><?= $address ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="mobile.css" media="(max-width: 768px)">
   <!-- FontAwesome for WhatsApp icon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
@@ -391,21 +392,23 @@ $lng = $data['geo_long'] ?? null;
   </style>
 </head>
 <body>
-  <nav class="navbar">
-    <a href="index.html" class="logo">
-      <img src="assets/braiteclogoclean.png" alt="Braitec Logo" />
-    </a>
-    <div class="menu-toggle" id="mobile-menu">
-      <span class="bar"></span>
-      <span class="bar"></span>
-      <span class="bar"></span>
-    </div>
-    <ul class="nav-links">
-      <li><a href="propiedades.php">Propiedades</a></li>
-      <li><a href="servicios.html">Servicios</a></li>
-      <li><a href="contacto.html">Contacto</a></li>
-    </ul>
-  </nav>
+<nav class="navbar" data-mobile-nav>
+  <a href="index.html" class="logo">
+    <img src="assets/braiteclogoclean.png" alt="Braitec Logo" />
+  </a>
+
+  <!-- Drawer menu (desktop styles will still treat this as the row menu) -->
+  <ul class="nav-links" id="mobile-menu">
+    <li><a href="propiedades.php">Propiedades</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="contacto.html">Contacto</a></li>
+  </ul>
+
+  <!-- Same hamburger used on index -->
+  <button class="hamburger" aria-label="Abrir menú" aria-controls="mobile-menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
 
   <div class="detalle-container">
     <div class="detalle-wrapper">
@@ -617,6 +620,69 @@ $lng = $data['geo_long'] ?? null;
   <script src="https://cdn.jsdelivr.net/npm/fslightbox/index.js"></script>
 
   <script>
+
+    /* ===== NAV: wire both nav variants ===== */
+(function () {
+  // Wire one nav: find button + menu list inside it
+  function wireNav(nav) {
+    const btn  = nav.querySelector('.hamburger, .menu-toggle');
+    const menu = nav.querySelector('.nav-links-index, .nav-links');
+
+    if (!btn || !menu) return;
+
+    // For reliable mobile behavior with blurred/sticky nav, "portal" the UL to body on mobile.
+    const mq = window.matchMedia('(max-width: 768px)');
+    const placeholder = document.createComment('menu-anchor');
+    if (!menu.nextSibling) nav.appendChild(placeholder); else nav.insertBefore(placeholder, menu.nextSibling);
+
+    function placeForViewport() {
+      if (mq.matches) {
+        // Move menu out of nav so it's not clipped by navbar stacking context
+        if (menu.parentElement !== document.body) document.body.insertBefore(menu, nav.nextSibling);
+      } else {
+        // Move back inside nav on desktop
+        if (placeholder.parentNode && menu.parentElement !== nav) placeholder.parentNode.insertBefore(menu, placeholder);
+        // Reset drawer state on desktop
+        menu.classList.remove('open');
+        btn.classList.remove('is-open');
+        document.body.classList.remove('no-scroll');
+        btn.setAttribute('aria-expanded','false');
+      }
+    }
+    placeForViewport();
+    mq.addEventListener('change', placeForViewport);
+
+    const close = () => {
+      menu.classList.remove('open');
+      btn.classList.remove('is-open');
+      btn.setAttribute('aria-expanded','false');
+      document.body.classList.remove('no-scroll');
+    };
+
+    btn.addEventListener('click', () => {
+      const opening = !menu.classList.contains('open');
+      menu.classList.toggle('open', opening);
+      btn.classList.toggle('is-open', opening);
+      btn.setAttribute('aria-expanded', opening ? 'true' : 'false');
+      document.body.classList.toggle('no-scroll', opening);
+    });
+
+    // Close on link click + ESC
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  }
+
+  function init() {
+    document.querySelectorAll('nav.navbarindex, nav.navbar').forEach(wireNav);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
     // Media toggle functionality
     function toggleMedia(mediaType) {
       const photosContainer = document.getElementById('photos-container');

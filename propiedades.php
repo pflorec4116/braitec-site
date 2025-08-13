@@ -8,7 +8,7 @@ $minPrice     = $_GET['price_from']      ?? '';
 $maxPrice     = $_GET['price_to']        ?? '';
 $keywords     = trim($_GET['keywords'] ?? '');
 $bedrooms     = $_GET['bedrooms']        ?? [];
-$priceOrder   = $_GET['price_order']     ?? '';
+$sortOrder    = $_GET['sort_order']      ?? 'newest'; // Default to newest
 
 $bedroomValues = array_filter(array_map('intval', (array)$bedrooms));
 $page     = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
@@ -61,6 +61,15 @@ if (is_numeric($maxPrice) && (int)$maxPrice > 0) {
     $data['price_to'] = (int)$maxPrice;
 }
 
+// Set sorting order
+$orderBy = '-created_on'; // Default to newest first
+if ($sortOrder === 'price_asc') {
+    $orderBy = 'price';
+} elseif ($sortOrder === 'price_desc') {
+    $orderBy = '-price';
+}
+$data['order_by'] = $orderBy;
+
 // -------------------- BUILD API REQUEST --------------------
 $dataJson = json_encode($data);
 $queryString = http_build_query([
@@ -99,76 +108,75 @@ if ($curlError) {
     $json = json_decode($response, true);
     if ($json && isset($json['objects'])) {
         $allProperties = $json['objects'];
+        
+        // -------------------- CLIENT-SIDE FILTERING --------------------
+        
+        // Filter by bedrooms (since API doesn't have this filter)
+        if (!empty($bedroomValues)) {
+            $allProperties = array_filter($allProperties, function ($p) use ($bedroomValues) {
+                return isset($p['suite_amount']) && in_array((int)$p['suite_amount'], $bedroomValues);
+            });
+        }
+        
+        // Enhanced keyword/location filtering
+        if ($keywords !== '') {
+            $k = mb_strtolower($keywords);
+            $allProperties = array_filter($allProperties, function ($p) use ($k) {
+                // Build comprehensive search blob with all location fields
+                $searchFields = [
+                    // Basic property info
+                    $p['address'] ?? '',
+                    $p['short_location'] ?? '',
+                    $p['description'] ?? '',
+                    $p['publication_title'] ?? '',
+                    
+                    // Branch/Agency info
+                    $p['branch']['display_name'] ?? '',
+                    $p['branch']['name'] ?? '',
+                    
+                    // Operation type
+                    $p['operations'][0]['operation_type']['name'] ?? '',
+                    
+                    // Enhanced Location Fields
+                    $p['location']['full_location'] ?? '',
+                    $p['location']['name'] ?? '',
+                    $p['location']['short_location'] ?? '',
+                    
+                    // Parent location (for nested locations like neighborhoods within cities)
+                    $p['location']['parent_location']['name'] ?? '',
+                    $p['location']['parent_location']['full_location'] ?? '',
+                    $p['location']['parent_location']['short_location'] ?? '',
+                    
+                    // Grandparent location (for deeper nesting like neighborhood > city > state)
+                    $p['location']['parent_location']['parent_location']['name'] ?? '',
+                    $p['location']['parent_location']['parent_location']['full_location'] ?? '',
+                    
+                    // Alternative location fields that might exist
+                    $p['location']['city'] ?? '',
+                    $p['location']['state'] ?? '',
+                    $p['location']['zone'] ?? '',
+                    $p['location']['neighborhood'] ?? '',
+                ];
+                
+                $searchBlob = mb_strtolower(implode(' ', array_filter($searchFields)));
+                return strpos($searchBlob, $k) !== false;
+            });
+        }
+        
+        // Additional client-side sorting for price (if API sorting doesn't work as expected)
+        if (in_array($sortOrder, ['price_asc', 'price_desc'])) {
+            usort($allProperties, function ($a, $b) use ($sortOrder) {
+                $priceA = $a['operations'][0]['prices'][0]['price'] ?? 0;
+                $priceB = $b['operations'][0]['prices'][0]['price'] ?? 0;
+                return $sortOrder === 'price_asc' ? $priceA <=> $priceB : $priceB <=> $priceA;
+            });
+        }
+        
+        $totalCount = count($allProperties);
     } else {
         echo "<!-- JSON Error: " . json_last_error_msg() . " -->";
     }
-    }
-    
-    // -------------------- CLIENT-SIDE FILTERING --------------------
-    
-    // Filter by bedrooms (since API doesn't have this filter)
-    if (!empty($bedroomValues)) {
-        $allProperties = array_filter($allProperties, function ($p) use ($bedroomValues) {
-            return isset($p['suite_amount']) && in_array((int)$p['suite_amount'], $bedroomValues);
-        });
-    }
-    
-    // Enhanced keyword/location filtering
-    if ($keywords !== '') {
-        $k = mb_strtolower($keywords);
-        $allProperties = array_filter($allProperties, function ($p) use ($k) {
-            // Build comprehensive search blob with all location fields
-            $searchFields = [
-                // Basic property info
-                $p['address'] ?? '',
-                $p['short_location'] ?? '',
-                $p['description'] ?? '',
-                $p['publication_title'] ?? '',
-                
-                // Branch/Agency info
-                $p['branch']['display_name'] ?? '',
-                $p['branch']['name'] ?? '',
-                
-                // Operation type
-                $p['operations'][0]['operation_type']['name'] ?? '',
-                
-                // Enhanced Location Fields
-                $p['location']['full_location'] ?? '',
-                $p['location']['name'] ?? '',
-                $p['location']['short_location'] ?? '',
-                
-                // Parent location (for nested locations like neighborhoods within cities)
-                $p['location']['parent_location']['name'] ?? '',
-                $p['location']['parent_location']['full_location'] ?? '',
-                $p['location']['parent_location']['short_location'] ?? '',
-                
-                // Grandparent location (for deeper nesting like neighborhood > city > state)
-                $p['location']['parent_location']['parent_location']['name'] ?? '',
-                $p['location']['parent_location']['parent_location']['full_location'] ?? '',
-                
-                // Alternative location fields that might exist
-                $p['location']['city'] ?? '',
-                $p['location']['state'] ?? '',
-                $p['location']['zone'] ?? '',
-                $p['location']['neighborhood'] ?? '',
-            ];
-            
-            $searchBlob = mb_strtolower(implode(' ', array_filter($searchFields)));
-            return strpos($searchBlob, $k) !== false;
-        });
-    }
-    
-    // Sort by price if requested
-    if (in_array($priceOrder, ['asc', 'desc'])) {
-        usort($allProperties, function ($a, $b) use ($priceOrder) {
-            $priceA = $a['operations'][0]['prices'][0]['price'] ?? 0;
-            $priceB = $b['operations'][0]['prices'][0]['price'] ?? 0;
-            return $priceOrder === 'asc' ? $priceA <=> $priceB : $priceB <=> $priceA;
-        });
-    }
-    
-    $totalCount = count($allProperties);
-
+}
 
 // -------------------- PAGINATION --------------------
 $paginatedProperties = array_slice($allProperties, $offset, $perPage);
@@ -185,7 +193,7 @@ if ($curlError) {
     echo "<!-- CURL Error: " . htmlspecialchars($curlError) . " -->";
 }
 echo "<!-- User filters: operation=$operation, propertyType=$propertyType, minPrice=$minPrice, maxPrice=$maxPrice -->";
-echo "<!-- Keywords: '$keywords', Bedrooms: " . json_encode($bedroomValues) . ", Order: $priceOrder -->";
+echo "<!-- Keywords: '$keywords', Bedrooms: " . json_encode($bedroomValues) . ", Sort: $sortOrder -->";
 
 // Helper function to build comprehensive keywords for frontend filtering
 function buildPropertyKeywords($property) {
@@ -224,6 +232,7 @@ function buildPropertyKeywords($property) {
   <title>Propiedades</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="mobile.css" media="(max-width: 768px)">
   <style>
     /* Preview Description Truncation */
     .preview-description {
@@ -238,21 +247,24 @@ function buildPropertyKeywords($property) {
   </style>
 </head>
 <body>
-  <nav class="navbar">
-    <a href="index.html" class="logo">
-      <img src="assets/braiteclogoclean.png" alt="Braitec Logo" />
-    </a>
-    <div class="menu-toggle" id="mobile-menu">
-      <span class="bar"></span>
-      <span class="bar"></span>
-      <span class="bar"></span>
-    </div>
-    <ul class="nav-links">
-      <li><a href="propiedades.php">Propiedades</a></li>
-      <li><a href="servicios.html">Servicios</a></li>
-      <li><a href="contacto.html">Contacto</a></li>
-    </ul>
-  </nav>
+  <nav class="navbar" data-mobile-nav>
+  <a href="index.html" class="logo">
+    <img src="assets/braiteclogoclean.png" alt="Braitec Logo" />
+  </a>
+
+  <!-- Drawer menu (desktop styles will still treat this as the row menu) -->
+  <ul class="nav-links" id="mobile-menu">
+    <li><a href="propiedades.php">Propiedades</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="contacto.html">Contacto</a></li>
+  </ul>
+
+  <!-- Same hamburger used on index -->
+  <button class="hamburger" aria-label="Abrir menú" aria-controls="mobile-menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+ 
 <div class="page-content">
   <!-- Mobile Filter Toggle Button -->
   <div class="mobile-filter-container" style="text-align: center;">
@@ -300,10 +312,11 @@ function buildPropertyKeywords($property) {
       
       <div class="bottomfilters">
         <div class="orderfilterwrapper">
-          <select name="price_order">
-            <option value="">Ordenar por Precio</option>
-            <option value="asc" <?= $priceOrder === 'asc' ? 'selected' : '' ?>>Precio: Menor a Mayor</option>
-            <option value="desc" <?= $priceOrder === 'desc' ? 'selected' : '' ?>>Precio: Mayor a Menor</option>
+          <select name="sort_order">
+            <option value="">Ordenar por...</option>
+            <option value="newest" <?= $sortOrder === 'newest' ? 'selected' : '' ?>>Más recientes</option>
+            <option value="price_asc" <?= $sortOrder === 'price_asc' ? 'selected' : '' ?>>Precio: Menor a Mayor</option>
+            <option value="price_desc" <?= $sortOrder === 'price_desc' ? 'selected' : '' ?>>Precio: Mayor a Menor</option>
           </select>
         </div>
         <div class="actionbuttons">
@@ -435,6 +448,69 @@ function buildPropertyKeywords($property) {
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCA0Z-kfOhEkoXusS1TJzmM1ZpNvCnBZow&libraries=geometry"></script>
 
 <script>
+  /* ===== NAV: wire both nav variants ===== */
+(function () {
+  // Wire one nav: find button + menu list inside it
+  function wireNav(nav) {
+    const btn  = nav.querySelector('.hamburger, .menu-toggle');
+    const menu = nav.querySelector('.nav-links-index, .nav-links');
+
+    if (!btn || !menu) return;
+
+    // For reliable mobile behavior with blurred/sticky nav, "portal" the UL to body on mobile.
+    const mq = window.matchMedia('(max-width: 768px)');
+    const placeholder = document.createComment('menu-anchor');
+    if (!menu.nextSibling) nav.appendChild(placeholder); else nav.insertBefore(placeholder, menu.nextSibling);
+
+    function placeForViewport() {
+      if (mq.matches) {
+        // Move menu out of nav so it's not clipped by navbar stacking context
+        if (menu.parentElement !== document.body) document.body.insertBefore(menu, nav.nextSibling);
+      } else {
+        // Move back inside nav on desktop
+        if (placeholder.parentNode && menu.parentElement !== nav) placeholder.parentNode.insertBefore(menu, placeholder);
+        // Reset drawer state on desktop
+        menu.classList.remove('open');
+        btn.classList.remove('is-open');
+        document.body.classList.remove('no-scroll');
+        btn.setAttribute('aria-expanded','false');
+      }
+    }
+    placeForViewport();
+    mq.addEventListener('change', placeForViewport);
+
+    const close = () => {
+      menu.classList.remove('open');
+      btn.classList.remove('is-open');
+      btn.setAttribute('aria-expanded','false');
+      document.body.classList.remove('no-scroll');
+    };
+
+    btn.addEventListener('click', () => {
+      const opening = !menu.classList.contains('open');
+      menu.classList.toggle('open', opening);
+      btn.classList.toggle('is-open', opening);
+      btn.setAttribute('aria-expanded', opening ? 'true' : 'false');
+      document.body.classList.toggle('no-scroll', opening);
+    });
+
+    // Close on link click + ESC
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  }
+
+  function init() {
+    document.querySelectorAll('nav.navbarindex, nav.navbar').forEach(wireNav);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
 class PropertyPreview {
   constructor() {
     this.previewCard = document.getElementById('property-preview');
@@ -707,19 +783,10 @@ document.querySelectorAll('.custom-multiselect').forEach(wrapper => {
   });
 });
 
-// Mobile menu toggle
-const mobileMenuToggle = document.getElementById('mobile-menu');
-if (mobileMenuToggle) {
-  mobileMenuToggle.addEventListener('click', function() {
-    const navLinks = document.querySelector('.nav-links');
-    navLinks.classList.toggle('show');
-  });
-}
-
 // Function to check for active filters
 function checkForActiveFilters() {
   const urlParams = new URLSearchParams(window.location.search);
-  const filterParams = ['keywords', 'operation_type', 'property_type', 'price_from', 'price_to', 'bedrooms', 'price_order'];
+  const filterParams = ['keywords', 'operation_type', 'property_type', 'price_from', 'price_to', 'bedrooms', 'sort_order'];
   
   return filterParams.some(param => {
     const value = urlParams.get(param);
