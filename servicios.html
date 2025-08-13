@@ -221,27 +221,41 @@
   </a>
 </script>
   <script>
+/* ===== NAV: wire both nav variants ===== */
 (function () {
-  // Ensure DOM is ready before binding
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMenu);
-  } else {
-    initMenu();
-  }
+  // Wire one nav: find button + menu list inside it
+  function wireNav(nav) {
+    const btn  = nav.querySelector('.hamburger, .menu-toggle');
+    const menu = nav.querySelector('.nav-links-index, .nav-links');
 
-  function initMenu() {
-    const btn  = document.querySelector('.hamburger');
-    const menu = document.getElementById('mobile-menu');
+    if (!btn || !menu) return;
 
-    if (!btn || !menu) {
-      console.warn('[nav] Missing .hamburger or #mobile-menu');
-      return;
+    // For reliable mobile behavior with blurred/sticky nav, "portal" the UL to body on mobile.
+    const mq = window.matchMedia('(max-width: 768px)');
+    const placeholder = document.createComment('menu-anchor');
+    if (!menu.nextSibling) nav.appendChild(placeholder); else nav.insertBefore(placeholder, menu.nextSibling);
+
+    function placeForViewport() {
+      if (mq.matches) {
+        // Move menu out of nav so it's not clipped by navbar stacking context
+        if (menu.parentElement !== document.body) document.body.insertBefore(menu, nav.nextSibling);
+      } else {
+        // Move back inside nav on desktop
+        if (placeholder.parentNode && menu.parentElement !== nav) placeholder.parentNode.insertBefore(menu, placeholder);
+        // Reset drawer state on desktop
+        menu.classList.remove('open');
+        btn.classList.remove('is-open');
+        document.body.classList.remove('no-scroll');
+        btn.setAttribute('aria-expanded','false');
+      }
     }
+    placeForViewport();
+    mq.addEventListener('change', placeForViewport);
 
-    const closeMenu = () => {
+    const close = () => {
       menu.classList.remove('open');
       btn.classList.remove('is-open');
-      btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-expanded','false');
       document.body.classList.remove('no-scroll');
     };
 
@@ -253,9 +267,19 @@
       document.body.classList.toggle('no-scroll', opening);
     });
 
-    // Close on link click and on ESC
-    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+    // Close on link click + ESC
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  }
+
+  function init() {
+    document.querySelectorAll('nav.navbarindex, nav.navbar').forEach(wireNav);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();
 

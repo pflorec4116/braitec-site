@@ -5,14 +5,6 @@
 
 @media (max-width: 768px) {
 
-html, body {
-  max-width: 100%;
-  overflow-x: hidden;
-  margin: 0;
-  padding: 0;
-}
-
-
 /* Utility */
 .no-scroll { overflow: hidden; }
 
@@ -300,10 +292,15 @@ html, body {
   display:flex; flex-direction:column; align-items:center; gap:12px;
 }
 .about-braitec img{
-  max-width:180px; display:block; margin:0 auto 12px; padding:0;
+  max-width:180px; 
+  display:block; 
+  margin:0 auto 12px; 
+  padding:0;
+  margin-right: 30px;
 }
-.about-braitec h2{ font-size:22px; margin-bottom:12px; }
-.about-braitec p{ font-size:15px; max-width:300px; }
+.about-braitec h2{ font-size:22px; margin-bottom:12px; margin-right: 30px; margin-top: -150px;}
+.about-braitec p{ font-size:15px; max-width:300px; margin-right: 30px; }
+.contactobtn {margin-right: 30px; }
 
 /* --------------------------------
    WHATSAPP FLOAT
@@ -497,4 +494,177 @@ footer img{ height:64px; }
 
 } /* End mobile media query */
 
+/* --------------------------------
+   CONTACTO.HTML MOBILE STYLES
+-----------------------------------*/
+.contact-form-section {
+  padding: 120px 16px 40px !important; /* Top spacing below fixed navbar */
+  min-height: 100vh !important;
+  box-sizing: border-box !important;
+}
 
+.contact-form-section > div {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 30px !important;
+  max-width: 100% !important;
+  padding: 24px 16px !important;
+  margin: 0 !important;
+  grid-template-columns: none !important; /* Override desktop 2-column grid */
+}
+
+/* Contact info section */
+.contact-form-section > div > div:first-child {
+  order: 1 !important;
+  margin-bottom: 0 !important;
+}
+
+.contact-form-section > div > div:first-child h2 {
+  font-size: 24px !important;
+  margin-bottom: 16px !important;
+  text-align: left !important;
+}
+
+.contact-form-section > div > div:first-child p {
+  margin-bottom: 12px !important;
+  line-height: 1.5 !important;
+  font-size: 15px !important;
+}
+
+/* Form section */
+.contact-form-section > div > div:last-child {
+  order: 2 !important;
+  margin-bottom: 0 !important;
+}
+
+.contact-form-section > div > div:last-child h2 {
+  font-size: 24px !important;
+  margin-bottom: 20px !important;
+  text-align: left !important;
+}
+
+/* Form styling */
+.contact-form-section form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Input styling - targeting .input-box class */
+.contact-form-section .input-box,
+.contact-form-section input.input-box,
+.contact-form-section textarea.input-box {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 48px !important;
+  padding: 14px 16px !important;
+  font-size: 16px !important; /* Prevent iOS zoom */
+  line-height: 1.4 !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 10px !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  backdrop-filter: blur(10px) !important;
+  box-sizing: border-box !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+/* Textarea specific height */
+.contact-form-section textarea.input-box {
+  min-height: 120px !important;
+  resize: vertical !important;
+  font-family: inherit !important;
+}
+
+/* Placeholder styling */
+.contact-form-section .input-box::placeholder {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 16px !important;
+}
+
+/* Focus states */
+.contact-form-section .input-box:focus,
+.contact-form-section .input-box:focus-visible {
+  outline: none !important;
+  border-color: #BA930C !important;
+  box-shadow: 0 0 0 3px rgba(186, 147, 12, 0.3) !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Error states */
+.contact-form-section .input-box:invalid:not(:placeholder-shown),
+.contact-form-section .input-box.error {
+  border-color: #ff4444 !important;
+  box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.3) !important;
+}
+
+/* iOS autofill fix */
+.contact-form-section .input-box:-webkit-autofill,
+.contact-form-section .input-box:-webkit-autofill:hover,
+.contact-form-section .input-box:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.1) inset !important;
+  -webkit-text-fill-color: white !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* Submit button styling */
+.contact-form-section button.input-box,
+.contact-form-section button[type="submit"] {
+  min-height: 52px !important;
+  padding: 16px 24px !important;
+  background-color: #BA930C !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease, transform 0.2s ease !important;
+  margin-top: 8px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+.contact-form-section button.input-box:hover,
+.contact-form-section button[type="submit"]:hover {
+  background-color: #a67f0a !important;
+  transform: translateY(-1px) !important;
+}
+
+.contact-form-section button.input-box:active,
+.contact-form-section button[type="submit"]:active {
+  transform: translateY(0) !important;
+}
+
+.contact-form-section button.input-box:disabled,
+.contact-form-section button[type="submit"]:disabled {
+  background-color: #666 !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+  transform: none !important;
+}
+
+/* Safe area adjustments for iOS */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .contact-form-section {
+    padding-bottom: calc(40px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* Additional mobile spacing and typography */
+.contact-form-section strong {
+  color: #BA930C !important;
+  font-weight: 600 !important;
+}
+
+/* Ensure no horizontal overflow */
+.contact-form-section * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
