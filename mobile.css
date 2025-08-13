@@ -668,3 +668,166 @@ footer img{ height:64px; }
   max-width: 100% !important;
   box-sizing: border-box !important;
 }
+
+/* --------------------------------
+   FOOTER MOBILE OPTIMIZATION
+-----------------------------------*/
+footer {
+  padding: 24px 16px 20px !important; /* Reduced top padding */
+  background-color: #000 !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  margin-top: 0 !important; /* Remove any top margin */
+}
+
+/* Main footer content */
+footer > div:first-child {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 30px !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding-bottom: 30px !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+/* Logo and tagline section */
+footer > div:first-child > div:first-child {
+  flex: none !important;
+  margin-bottom: 0 !important;
+  text-align: center !important;
+}
+
+footer > div:first-child > div:first-child img {
+  height: 80px !important;
+  width: auto !important;
+  margin: 0 auto 10px !important;
+  display: block !important;
+}
+
+footer > div:first-child > div:first-child p {
+  margin: 0 !important;
+  font-size: 12px !important;
+  color: rgba(255,255,255,0.8) !important;
+  text-align: center !important;
+}
+
+/* Footer sections - stack vertically */
+footer > div:first-child > div:not(:first-child) {
+  flex: none !important;
+  margin-bottom: 0 !important;
+  text-align: left !important;
+}
+
+footer h4 {
+  margin: 0 0 12px 0 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: white !important;
+}
+
+footer ul {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+footer ul li {
+  margin-bottom: 8px !important;
+}
+
+footer ul li:last-child {
+  margin-bottom: 0 !important;
+}
+
+footer a {
+  color: rgba(255,255,255,0.8) !important;
+  text-decoration: none !important;
+  font-size: 14px !important;
+  transition: color 0.3s ease !important;
+}
+
+footer a:hover {
+  color: #BA930C !important;
+}
+
+/* Bottom section with social icons and copyright */
+footer > div:last-child {
+  text-align: center !important;
+  padding-top: 30px !important;
+  margin: 0 !important;
+}
+
+/* Social Icons Section */
+.social-icons {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 20px !important;
+  margin-bottom: 20px !important;
+}
+
+.social-icons a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 50px !important;
+  height: 50px !important;
+  border: 2px solid white !important;
+  border-radius: 50% !important;
+  transition: all 0.3s ease !important;
+  background-color: transparent !important;
+  text-decoration: none !important;
+  position: relative !important;
+}
+
+.social-icons a:hover {
+  background-color: white !important;
+  transform: translateY(-2px) !important;
+}
+
+.social-icons img {
+  width: 20px !important;
+  height: 20px !important;
+  object-fit: contain !important;
+  transition: filter 0.3s ease !important;
+  display: block !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.social-icons a:hover img {
+  filter: invert(1) !important;
+}
+
+/* Copyright text */
+footer > div:last-child p {
+  margin: 0 !important;
+  font-size: 12px !important;
+  color: rgba(255,255,255,0.6) !important;
+  line-height: 1.4 !important;
+}
+
+/* WhatsApp button adjustment */
+.whatsapp-button {
+  bottom: 20px !important;
+  right: 16px !important;
+  z-index: 1000 !important;
+}
+
+.whatsapp-button img {
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+}
+
+/* Safe area support for devices with notches */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  footer {
+    padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+  }
+}
