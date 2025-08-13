@@ -478,6 +478,7 @@ footer img{ height:64px; }
 .detalle-container .main-image {
   width: 100% !important;
   height: 280px !important;
+  margin-bottom: -80px;
 }
 
 .detalle-container .thumbnail-grid {
