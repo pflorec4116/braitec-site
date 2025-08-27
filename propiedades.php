@@ -244,6 +244,8 @@ function buildPropertyKeywords($property) {
       line-height: 1.4;
       max-height: calc(1.4em * 4); /* 4 lines * line-height */
     }
+   
+
   </style>
 </head>
 <body>
@@ -363,7 +365,10 @@ function buildPropertyKeywords($property) {
               $lng = $p['geo_long'] ?? null;
               $description = htmlspecialchars($p['description'] ?? $address);
               $title = htmlspecialchars($p['publication_title'] ?? $address);
-              
+              /* NEW: hard cap for left-card title (adjust 60 as you like) */
+$shortTitle = function_exists('mb_strimwidth')
+  ? mb_strimwidth($title, 0, 65, '…')
+  : (strlen($title) > 65 ? substr($title, 0, 57) . '…' : $title);
               // Use the enhanced keyword builder
               $keywordsBlob = buildPropertyKeywords($p);
             ?>
@@ -387,7 +392,7 @@ function buildPropertyKeywords($property) {
                   <?php endif; ?>
                 </div>
                 <div class="property-info">
-                  <h3 class="property-title"><?= $title ?></h3>
+                  <h3 class="property-title" title="<?= $title ?>"><?= $shortTitle ?></h3>
                   <p class="property-location"><?= $branch ?></p>
                   <p class="property-description"><?= $address ?></p>
                   <div class="property-details">
